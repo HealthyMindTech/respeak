@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import axios from "axios";
 
-exports.helloWorld = functions.https.onRequest(async (request, response) => {
+export const helloWorld = functions.region("europe-west3").https.onRequest(async (request, response) => {
     functions.logger.info("Hello logs!", { structuredData: true });
     // axios request
     const res = await axios.post("https://api.openai.com/v1/engines/text-davinci-edit-001/edits", {
@@ -18,4 +18,13 @@ exports.helloWorld = functions.https.onRequest(async (request, response) => {
         console.log(res.data);
         response.send(res.data.choicesp[0].text);
     });
+});
+
+export const addThought = functions.region("europe-west3").https.onRequest(async (req, res) => {
+    /*
+    TODO:
+        - Put the post in the database.
+        - Figure out which users need to receive the post.
+    */
+    res.send("hello, world!");
 });
