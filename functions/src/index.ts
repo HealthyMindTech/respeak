@@ -1,4 +1,4 @@
-import functions from 'firebase-functions';
+import * as functions from 'firebase-functions';
 import axios from "axios";
 
 exports.helloWorld = functions.https.onRequest(async (request, response) => {
