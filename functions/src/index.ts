@@ -1,5 +1,8 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 import axios from "axios";
+
+admin.initializeApp();
 
 export const helloWorld = functions.region("europe-west3").https.onRequest(async (request, response) => {
     functions.logger.info("Hello logs!", { structuredData: true });
@@ -20,11 +23,23 @@ export const helloWorld = functions.region("europe-west3").https.onRequest(async
     });
 });
 
-export const addThought = functions.region("europe-west3").https.onRequest(async (req, res) => {
+export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
+    console.log('called add thought');
     /*
     TODO:
         - Put the post in the database.
         - Figure out which users need to receive the post.
     */
-    res.send("hello, world!");
+    const firestore = admin.firestore();
+    const doc = await firestore.collection('thought').add(
+        {
+            // owner: context.auth?.uid,
+            content: data.content,
+            createdAt: admin.firestore.Timestamp.now(),
+        },
+    );
+
+    await firestore.collection('waitingThought').add({ id: doc.id, numRespeaks: 0 });
+
+    return "done";
 });
