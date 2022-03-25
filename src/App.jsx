@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form} from 'react-bootstrap';
 import { QuestionCircle } from 'react-bootstrap-icons';
+import Image from 'react-bootstrap/Image';
+import BgImage from '../src/assets/img/Thoughts.png'
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -73,10 +75,12 @@ function App() {
           <InfoDialog />
         </Container>
       </Navbar>
+      <Image src={BgImage} className='img-fluid w-100' alt='...' />
       <Container>
         <Row>
           <Col xs={3} />
           <Col xs={6}>
+          <br></br>
           <ThoughtsForm/>
           </Col>
           <Col xs={3} />
