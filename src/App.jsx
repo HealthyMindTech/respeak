@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form} from 'react-bootstrap';
-import { QuestionCircle } from 'react-bootstrap-icons';
+import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab} from 'react-bootstrap';
+import { QuestionCircle, ClockHistory } from 'react-bootstrap-icons';
 import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png'
+import Avatar from '../src/assets/img/avatar.png'
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -57,11 +58,32 @@ function ThoughtsForm() {
         Hint: Just share what's burdening you atm. 
       </Form.Text>
     </Form.Group>
-    <Button variant="primary" type="submit">
+    <Button variant="dark" type="submit" style={{float: 'right'}}>
       SEND
     </Button>
   </Form>
 );
+}
+
+function RespeakForm() {
+  return(
+    <Form>
+    <Form.Group className="mb-3" controlId="formRespeak">
+      <Form.Label>What's another perspective on the following: </Form.Label>
+      <Card body border="warning" bg="warning">
+        <i>I feel like I am always being stupid and nobody is helping me. 
+          I am not smart enough. </i>
+      </Card>
+      <br></br>
+      <Form.Control as="textarea" placeholder="Can you identify some patterns? 
+      Are there any assumptions made without reason?" rows="3" />
+      
+    </Form.Group>
+    <Button variant="dark" type="submit" style={{float: 'right'}}>
+      SEND
+    </Button>
+  </Form>
+  );
 }
 
 
@@ -72,18 +94,28 @@ function App() {
       <Navbar bg="light">
         <Container>
           <Navbar.Brand href="#home">Respeak</Navbar.Brand>
-          <InfoDialog />
+          <InfoDialog /> 
         </Container>
       </Navbar>
       <Image src={BgImage} className='img-fluid w-100' alt='...' />
+      {/* <Image src={Avatar}  style={{position: 'relative', height: '50%'}}/> */}
       <Container>
         <Row>
-          <Col xs={3} />
-          <Col xs={6}>
-          <br></br>
-          <ThoughtsForm/>
+          <Col xs={2} />
+          <Col xs={8}>
+          <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+              <Tab eventKey="home" title="Thoughts">
+                <ThoughtsForm/>
+              </Tab>
+              <Tab eventKey="profile" title="Respeaks">
+              <RespeakForm/>
+              </Tab>
+              <Tab eventKey="history" title="History">
+              History of thoughts
+              </Tab>
+            </Tabs>
           </Col>
-          <Col xs={3} />
+          <Col xs={2} />
         </Row>
       </Container>
     </ThemeProvider>
