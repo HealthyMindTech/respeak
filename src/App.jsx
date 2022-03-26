@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
   Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab,
@@ -8,7 +8,7 @@ import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
-import { addThought } from './firebaseUtils';
+import { addThought, addRespeak } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
 
 function InfoDialog() {
@@ -62,7 +62,7 @@ function ThoughtsForm({onDone}) {
     if (onDone) {
       onDone();
     }
-  }, [thoughtField]);
+  }, [thoughtField, onDone]);
   
   return(
     <Form onSubmit={submit}>
@@ -168,26 +168,70 @@ function HistoryPane() {
   )
 }
 
+function RespeakFormEntry({thoughtList}) {
+  const [thought, setThought] = useState(null);
+  const textField = useRef();
+
+  useEffect(() => {
+    setThought(thought => {
+      if (thought === null && thoughtList.length > 0) {
+        return thoughtList[0];
+      }
+
+      return thought;
+    });
+  }, [thoughtList]);
+  
+  const passRespeak = useCallback(async (e) => {
+    e.preventDefault();
+
+    
+    if (thought === null) {
+      if (thoughtList.length > 0) {
+        setThought(thoughtList[0]);
+      }
+    } else {
+      for (let i = 0; i < thoughtList.length; i++) {
+        if (thoughtList[i].id !== thought.id) {
+          setThought(thoughtList[i]);
+        }
+      }
+    }
+    await addRespeak(thought.id, textField.current.value, null);
+    
+    textField.current.value = "";
+  }, [textField, thoughtList, thought]);
+
+  if (!thought) {
+    return null;
+  }
+    
+  return (
+    <Form onSubmit={passRespeak}>
+      <Form.Group className="mb-3" controlId="formRespeak">
+        <Form.Label>What's another perspective on the following: </Form.Label>
+        <Card body border="warning" bg="warning">
+          <i>{thought.content}</i>
+        </Card>
+        <br></br>
+        <Form.Control
+          as="textarea"
+          ref={textField}
+          placeholder="Can you identify some patterns? Are there any assumptions made without reason?"
+          rows="3" />
+      </Form.Group>
+      <Button variant="dark" type="submit">
+        Send
+      </Button>
+    </Form>);
+}
+    
 function RespeakForm() {
   return(
     <WaitingThoughtsContext.Consumer>
-      { value => 
-        <Form>
-          <Form.Group className="mb-3" controlId="formRespeak">
-            <Form.Label>What's another perspective on the following: </Form.Label>
-            <Card body border="warning" bg="warning">
-              <i>I feel like I am always being stupid and nobody is helping me. 
-              I am not smart enough. </i>
-            </Card>
-            <br></br>
-            <Form.Control as="textarea" placeholder="Can you identify some patterns? 
-      Are there any assumptions made without reason?" rows="3" />
-            
-          </Form.Group>
-          <Button variant="dark" type="submit">
-            Send
-          </Button>
-        </Form>
+      { value => {
+        return <RespeakFormEntry thoughtList={value} />
+      }
       }
     </WaitingThoughtsContext.Consumer>
   );
