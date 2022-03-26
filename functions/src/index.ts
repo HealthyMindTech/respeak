@@ -21,7 +21,7 @@ async function findThoughtsWithNoRespeaks() {
 
 function getOpenAIResponse(reformulationCommand, thoughtText) {
     return axios.post("https://api.openai.com/v1/engines/text-davinci-002/completions", {
-        "prompt": `Write from the point of view of a caring, very skilled therapist. ${reformulationCommand}\n\nThought: ${thoughtText}\n\n`,
+        "prompt": `${reformulationCommand}\n\nThought: ${thoughtText}\n\n`,
         "temperature": 0.7,
         "max_tokens": 182,
         "top_p": 1,
