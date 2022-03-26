@@ -333,7 +333,7 @@ function HistoryTabTitle() {
           <Badge pill bg="info"> {newThoughts}</Badge></span> : null}
         </div>
         <JournalBookmarkFill size={28}/>
-          <div class="fs-4">Thoughts</div>
+          <div class="fs-6">Thoughts</div>
       </>)
     }}
   </MyThoughtsContext.Consumer>
@@ -397,10 +397,10 @@ function App() {
                 <Tabs activeKey={activeKey}
                   onSelect={(eventKey) => setActiveKey(eventKey)}
                   id="uncontrolled-tab-example" className="mb-3 justify-content-center">
-                  <Tab eventKey="home" title={<><ChatSquareText size={28}/><div class="fs-4">Speak</div></>}>
+                  <Tab eventKey="home" title={<><ChatSquareText size={28}/><div class="fs-6">Speak</div></>}>
                     <ThoughtsForm onDone={onThoughtDone} />
                   </Tab>
-                  <Tab eventKey="respeak" title={<><ChatRightHeart size={28}/><div class="fs-4">Respeak</div></>}>
+                  <Tab eventKey="respeak" title={<><ChatRightHeart size={28}/><div class="fs-6">Respeak</div></>}>
                     <RespeakForm onDone={onRespeakDone} />
                   </Tab>
                   <Tab eventKey="thought" title={<HistoryTabTitle/>}>
