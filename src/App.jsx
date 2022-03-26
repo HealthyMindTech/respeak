@@ -5,8 +5,7 @@ import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png';
 // import Avatar from '../src/assets/img/avatar.png';
 
-import { postThought } from './firebaseUtils';
-
+import { addThought } from './firebaseUtils';
 
 function InfoDialog() {
   console.log(process.env.NODE_ENV);
@@ -56,7 +55,7 @@ function ThoughtsForm() {
   const thoughtField = useRef();
   const submit = useCallback((e) => {
     e.preventDefault();
-    postThought(thoughtField.value);
+    addThought(thoughtField.value);
   }, [thoughtField]);
     
   return(
@@ -81,7 +80,7 @@ function ThoughtBubble({ thought }) {
       <Row>
         <Col xs={2} />
         <Col xs={10}>
-          <div class="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
+          <div className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
             {thought.content}
           </div>
         </Col>
@@ -92,18 +91,18 @@ function ThoughtBubble({ thought }) {
 
 function RespeakBubble({ respeak }) {
   return (
-    <div class="mb-4 mt-4">
+    <div className="mb-4 mt-4">
       <div>
         <Row>
           <Col xs={10}>
-            <div class="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient rounded text-white">
+            <div className="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient rounded text-white">
               {respeak.content}
             </div>
           </Col>
           <Col xs={2} />
         </Row>
       </div>
-      <div class="text-muted">
+      <div className="text-muted">
         <small>{respeak.author}</small>
       </div>
     </div>
@@ -123,13 +122,13 @@ function HistoryEntry({ thought }) {
   return(
     <>
       <div 
-          class="shadow mb-4 mt-4 br-4 p-3 bg-white rounded" 
+          className="shadow mb-4 mt-4 br-4 p-3 bg-white rounded" 
           onClick={handleShow}
           style={{cursor: 'pointer', userSelect: 'none'}}>
-        <div class="fs-4">{thought.content}</div>
-        <div class="fs-6">
+        <div className="fs-4">{thought.content}</div>
+        <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
-          <span class="text-muted">{thought.createdAt}</span>
+          <span className="text-muted">{thought.createdAt}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
       </div>
