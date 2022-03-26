@@ -4,7 +4,7 @@ import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, T
 import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
-
+import { MyThoughtsContext } from './context';
 import { addThought } from './firebaseUtils';
 
 function InfoDialog() {
@@ -128,15 +128,15 @@ function HistoryEntry({ thought }) {
         <div className="fs-4">{thought.content}</div>
         <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
-          <span className="text-muted">{thought.createdAt}</span>
+          <span className="text-muted">{thought.createdAt.toString()}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
     </div>
-
+    
     <Modal show={show} onHide={handleClose}>
       <Modal.Body>
         <ThoughtBubble thought={thought} />
-        {thought.respeaks.map((r, i) => <RespeakBubble key={i} respeak={r} />)}
+        {(thought.respeaks || []).map((r, i) => <RespeakBubble key={i} respeak={r} />)}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={handleClose}>
@@ -149,86 +149,91 @@ function HistoryEntry({ thought }) {
 }
 
 function HistoryPane() {
-  const [thoughts] = useState([
-    {
-      content: "I'm depressed",
-      createdAt: "1y",
-      updated: false,
-      respeaks: [],
-      id: 1,
-    },
-    {
-      content: "No hope for me",
-      createdAt: "2w",
-      updated: true,
-      respeaks: [
-        {
-          author: 'someone else',
-          content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
-          createdAt: '2w',
-        },
-        {
-          author: 'some stranger',
-          content: 'Hey, here are my thoughts on this issue.',
-          createdAt: '3w',
-        },
-      ],
-      id: 2,
-    },
-    {
-      content: "I need help",
-      createdAt: "11h",
-      updated: false,
-      respeaks: [],
-      id: 3,
-    },
-    {
-      content: "I'm depressed",
-      createdAt: "3w",
-      updated: true,
-      respeaks: [
-        {
-          author: 'someone else',
-          content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
-          createdAt: '2w',
-        },
-        {
-          author: 'some stranger',
-          content: 'Hey, here are my thoughts on this issue.',
-          createdAt: '3w',
-        },
-      ],
-      id: 4
-    },
-    {
-      content: "No hope for me",
-      createdAt: "2m",
-      updated: false,
-      respeaks: [],
-      id: 5
-    },
-    {
-      content: "I need help",
-      createdAt: "6m",
-      updated: false,
-      respeaks: [],
-      id: 6
-    },
-  ]);
+  // const [thoughts] = useState([
+  //   {
+  //     content: "I'm depressed",
+  //     createdAt: "1y",
+  //     updated: false,
+  //     respeaks: [],
+  //     id: 1,
+  //   },
+  //   {
+  //     content: "No hope for me",
+  //     createdAt: "2w",
+  //     updated: true,
+  //     respeaks: [
+  //       {
+  //         author: 'someone else',
+  //         content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
+  //         createdAt: '2w',
+  //       },
+  //       {
+  //         author: 'some stranger',
+  //         content: 'Hey, here are my thoughts on this issue.',
+  //         createdAt: '3w',
+  //       },
+  //     ],
+  //     id: 2,
+  //   },
+  //   {
+  //     content: "I need help",
+  //     createdAt: "11h",
+  //     updated: false,
+  //     respeaks: [],
+  //     id: 3,
+  //   },
+  //   {
+  //     content: "I'm depressed",
+  //     createdAt: "3w",
+  //     updated: true,
+  //     respeaks: [
+  //       {
+  //         author: 'someone else',
+  //         content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
+  //         createdAt: '2w',
+  //       },
+  //       {
+  //         author: 'some stranger',
+  //         content: 'Hey, here are my thoughts on this issue.',
+  //         createdAt: '3w',
+  //       },
+  //     ],
+  //     id: 4
+  //   },
+  //   {
+  //     content: "No hope for me",
+  //     createdAt: "2m",
+  //     updated: false,
+  //     respeaks: [],
+  //     id: 5
+  //   },
+  //   {
+  //     content: "I need help",
+  //     createdAt: "6m",
+  //     updated: false,
+  //     respeaks: [],
+  //     id: 6
+  //   },
+  // ]);
 
-  thoughts.sort((a, b) => {
-    if (a.updated) {
-      return -1;
-    } else if (b.updated) {
-      return 1;
-    } else {
-      return a.createdAt < b.createdAt ? -1 : 1;
-    }
-  });
+  // thoughts.sort((a, b) => {
+  //   if (a.updated) {
+  //     return -1;
+  //   } else if (b.updated) {
+  //     return 1;
+  //   } else {
+  //     return a.createdAt < b.createdAt ? -1 : 1;
+  //   }
+  // });
 
+  
   return (
     <div style={{overflowX: 'visible'}}>
-      {thoughts.map((t, i) => <HistoryEntry key={i} thought={t} />)}
+      <MyThoughtsContext.Consumer>
+        {(myThoughts) =>
+          myThoughts.map(thought => <HistoryEntry key={thought.id} thought={thought} />)
+        }
+      </MyThoughtsContext.Consumer>
     </div>
   )
 }
