@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
   Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab,
-  Toast
+  Toast, Badge
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import AvatarImage from '../src/assets/img/avatar_2_h.png';
@@ -168,7 +168,14 @@ function HistoryEntry({ thought }) {
         onClick={handleShow}
         style={{cursor: 'pointer', userSelect: 'none'}}
       >
-        <Container className="fs-4">{thought.content}</Container>
+        <div className="fs-6" style={{float: 'right'}}>
+          <Badge pill bg="success">
+            {thought.numRespeaks}
+          </Badge>
+        </div>
+        <Container className="fs-4">
+          {thought.content}
+        </Container>
         <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
           <span className="text-muted">{labelForTimeSinceDate(thought.createdAt.toDate())}</span>
