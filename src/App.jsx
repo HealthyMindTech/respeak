@@ -358,7 +358,7 @@ function App() {
   return (
     <ThoughtKeeper>
       <ThemeProvider>
-        <Navbar bg="light">
+        <Navbar bg="light" fixed="top">
           <Container>
             <Navbar.Brand href="#home">Respeak</Navbar.Brand>
             <InfoDialog />
@@ -372,7 +372,7 @@ function App() {
             <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
         </ToastContainer>
-        <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
+        <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
           <Container
             fluid
             style={
@@ -390,7 +390,7 @@ function App() {
           </Container>
 
           <Container fluid style={{
-            background: "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 95%, rgba(255,255,255,0) 100%)",
+            background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 30px, rgba(255,255,255,1) 100%)",
           }}>
             <Row style={{ paddingTop: '.7rem' }} >
               <Col xl={4} lg={3} md={2} xs={1} />
