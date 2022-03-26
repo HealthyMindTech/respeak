@@ -75,45 +75,157 @@ function ThoughtsForm() {
 );
 }
 
-function displayThought(thought) {
-  // return () => null;
+function ThoughtBubble({ thought }) {
+  return (
+    <div>
+      <Row>
+        <Col xs={2} />
+        <Col xs={10}>
+          <div class="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
+            {thought.content}
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-function HistoryEntry(thought) {
-  return(
-    <div 
-        class="shadow-sm mb-4 br-4 p-3 bg-white rounded" 
-        onClick={displayThought(thought)}
-        style={{cursor: 'pointer', userSelect: 'none'}}>
-      <div class="h4">{thought.content}</div>
+function RespeakBubble({ respeak }) {
+  return (
+    <div class="mb-4 mt-4">
       <div>
-        {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
-        <span class="fs-6 text-muted">{thought.owner}</span>
+        <Row>
+          <Col xs={10}>
+            <div class="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient rounded text-white">
+              {respeak.content}
+            </div>
+          </Col>
+          <Col xs={2} />
+        </Row>
+      </div>
+      <div class="text-muted">
+        <small>{respeak.author}</small>
       </div>
     </div>
   );
 }
 
+function HistoryEntry({ thought }) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {
+    thought.updated = false;
+    return setShow(false);
+  };
+
+  const handleShow = () => setShow(true);
+
+  return(
+    <>
+      <div 
+          class="shadow mb-4 mt-4 br-4 p-3 bg-white rounded" 
+          onClick={handleShow}
+          style={{cursor: 'pointer', userSelect: 'none'}}>
+        <div class="fs-4">{thought.content}</div>
+        <div class="fs-6">
+          {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
+          <span class="text-muted">{thought.createdAt}</span>
+          { thought.updated ? <span> • <b>Updated</b></span> : null }
+        </div>
+      </div>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Body>
+          <ThoughtBubble thought={thought} />
+          {thought.respeaks.map((r, i) => <RespeakBubble key={i} respeak={r} />)}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
 function HistoryPane() {
-  let thoughts = [
+  const [thoughts] = useState([
     {
-      owner: "health",
       content: "I'm depressed",
-      createdAt: "1234",
+      createdAt: "1y",
+      updated: false,
+      respeaks: [],
     },
     {
-      owner: "jassper",
       content: "No hope for me",
-      createdAt: "1234",
+      createdAt: "2w",
+      updated: true,
+      respeaks: [
+        {
+          author: 'someone else',
+          content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
+          createdAt: '2w',
+        },
+        {
+          author: 'some stranger',
+          content: 'Hey, here are my thoughts on this issue.',
+          createdAt: '3w',
+        },
+      ],
     },
     {
-      owner: "hack",
       content: "I need help",
-      createdAt: "1234",
+      createdAt: "11h",
+      updated: false,
+      respeaks: [],
     },
-  ];
-  
-  return thoughts.map(t => HistoryEntry(t));
+    {
+      content: "I'm depressed",
+      createdAt: "3w",
+      updated: true,
+      respeaks: [
+        {
+          author: 'someone else',
+          content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
+          createdAt: '2w',
+        },
+        {
+          author: 'some stranger',
+          content: 'Hey, here are my thoughts on this issue.',
+          createdAt: '3w',
+        },
+      ],
+    },
+    {
+      content: "No hope for me",
+      createdAt: "2m",
+      updated: false,
+      respeaks: [],
+    },
+    {
+      content: "I need help",
+      createdAt: "6m",
+      updated: false,
+      respeaks: [],
+    },
+  ]);
+
+  thoughts.sort((a, b) => {
+    if (a.updated) {
+      return -1;
+    } else if (b.updated) {
+      return 1;
+    } else {
+      return a.createdAt < b.createdAt ? -1 : 1;
+    }
+  });
+
+  return (
+    <div style={{overflowX: 'visible'}}>
+      {thoughts.map((t, i) => <HistoryEntry key={i} thought={t} />)}
+    </div>
+  )
 }
 
 function RespeakForm() {
@@ -161,7 +273,7 @@ function App() {
               <RespeakForm/>
               </Tab>
               <Tab eventKey="history" title="History">
-              <HistoryPane />
+              <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
               </Tab>
             </Tabs>
           </Col>
