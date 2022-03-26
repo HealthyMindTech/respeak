@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useRef } from "react";
-import { QuestionCircle, ClockHistory } from 'react-bootstrap-icons';
+import { QuestionCircle } from 'react-bootstrap-icons';
 import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab} from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
-import BgImage from '../src/assets/img/Thoughts.png'
-import Avatar from '../src/assets/img/avatar.png'
+import BgImage from '../src/assets/img/Thoughts.png';
+// import Avatar from '../src/assets/img/avatar.png';
 
 import { postThought } from './firebaseUtils';
 
@@ -55,9 +55,8 @@ function ThoughtsForm() {
   const thoughtField = useRef();
   const submit = useCallback((e) => {
     e.preventDefault();
-    console.log(thoughtField);
     postThought(thoughtField.value);
-  });
+  }, [thoughtField]);
     
   return(
     <Form onSubmit={submit}>
