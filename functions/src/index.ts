@@ -2,16 +2,22 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import axios from "axios";
 
+const THOUGHT_COLLECTION = 'thought';
+const RESPEAK_COLLECTION = 'respeak';
+
 admin.initializeApp();
 
-export const helloWorld = functions.region("europe-west3").https.onRequest(async (request, response) => {
-    functions.logger.info("Hello logs!", { structuredData: true });
+export const openAIRespeak = functions.region("europe-west3").https.onCall(async (data, response) => {
+    const thoughtText = data.thoughtText;
+    // const openaiPrompt
     // axios request
     const res = await axios.post("https://api.openai.com/v1/engines/text-davinci-edit-001/edits", {
-        input: "I woke up at 11:30 in the morning and fell back asleep until 2:00 PM. The night before I laid in bed watching something on Netflix, I can’t remember now. The past week is a haze. I’ve barely had any energy to get out of bed, let alone do anything productive. Today I managed to make myself some breakfast and that’s the biggest victory I’ve had in the last three days. I have to go to work soon and I’m dreading it. It means having to get a shower, it means having to be around people and interact with them for longer than a few seconds. I already know that as soon as I get home I won’t make dinner, I won’t do anything but lay on my couch for a few hours until I’m tired enough to fall asleep. And this is how I’ve been for months. This is what it’s like to live with depression.\n\n",
-        instruction: "Rewrite this from a more positive point of view.",
-        temperature: 0.7,
-        top_p: 1,
+        "prompt": `Identify some patterns and exaggerations in this thought and assumptions the subject made without reason.\n\nThought: "${thoughtText}"\n\n`,
+        "temperature": 0.7,
+        "max_tokens": 182,
+        "top_p": 1,
+        "frequency_penalty": 0,
+        "presence_penalty": 0
     }, {
         headers: {
             "Content-Type": "application/json",
@@ -19,12 +25,12 @@ export const helloWorld = functions.region("europe-west3").https.onRequest(async
         }
     }).then(res => {
         console.log(res.data);
-        response.send(res.data.choicesp[0].text);
+        return res.data.choicesp[0].text;
     });
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
-    await admin.firestore().collection('thought').add(
+    await admin.firestore().collection(THOUGHT_COLLECTION).add(
         {
             owner: context.auth!.uid,
             content: data.content,
@@ -38,9 +44,27 @@ export const addThought = functions.region("europe-west3").https.onCall(async (d
     return "done";
 });
 
-export const addSpeak = functions.region("europe-west3").https.onCall(async (data, context) => {
+export const addRespeak = functions.region("europe-west3").https.onCall(async (data, context) => {
     const firestore = admin.firestore();
     const thoughtId = data.thoughtId;
 
+    const thought = firestore.collection(THOUGHT_COLLECTION).doc(thoughtId);
+    const batch = firestore.batch();
 
+    const newRespeak = thought.collection(RESPEAK_COLLECTION).doc();
+    batch.create(newRespeak, {
+        content: data.content,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        owner: context.auth!.uid,
+        perspective: data.perspective
+    });
+
+    batch.update(thought, {
+        numRespeaks: admin.firestore.FieldValue.increment(1),
+        notSeenRespeaks: admin.firestore.FieldValue.increment(1),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+    return "done";
 });

@@ -8,15 +8,24 @@ if (process.env.REACT_APP_USE_EMULATOR) {
   connectFunctionsEmulator(functions, "localhost", 5001);
 }
 
-const postThoughtCallable = httpsCallable(functions, 'addThought');
+const addThoughtCallable = httpsCallable(functions, 'addThought');
+const addRespeakCallable = httpsCallable(functions, 'addRespeak');
 
-const postThought = async (thought) => {
-  const res = await postThoughtCallable({content: thought});
-  console.log(res);
-  
+const addThought = async (thought) => {
+  await addThoughtCallable({content: thought});
 }
 
+const addRespeak = async (thoughtId, respeak, perspective) => {
+  await addRespeakCallable({
+    content: respeak,
+    thoughtId,
+    perspective
+  });
+}
+  
+
 export {
-  postThought
+  addThought,
+  addRespeak
 };
   

@@ -26,7 +26,6 @@ signInAnonymously(auth)
   .then(() => {
     onSnapshot(collection(firestore, "waitingThought"),
                (doc) => {
-                 console.log(doc);
                });
   })
   .catch((error) => {

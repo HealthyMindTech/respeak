@@ -270,7 +270,7 @@ function App() {
                 <ThoughtsForm/>
               </Tab>
               <Tab eventKey="profile" title="Respeaks">
-              <RespeakForm/>
+                <RespeakForm />
               </Tab>
               <Tab eventKey="history" title="History">
               <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
