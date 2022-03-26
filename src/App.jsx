@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
   Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Tabs, Tab,
-  Toast, Badge
+  Toast, Badge, ToastContainer, Card
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import AvatarImage from '../src/assets/img/avatar_2_h.png';
@@ -32,18 +32,25 @@ function InfoDialog() {
         <Modal.Body>
           <p>Share your thoughts and help others reframe theirs.</p>
           <p>Write down what thoughts are burdening you at the moment, and click SEND. </p>
-          <p>Afterward, help others reframe their thoughts. Can you find a different 
+          <p>Afterwards, help others reframe their thoughts. Can you find a different 
           perspective for their challenge? </p>
           {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed. 
               And you can inspect the history of all the thoughts.</p> */}
           <hr></hr>
-          <p>Example</p>
-          <p>Thought:</p>
-          <p><i>“I failed the math test today and I feel useless and so stupid.”</i></p>
+          <p>Example thought:</p>
+          <Card>
+            <Card.Body><i>I failed the math test today and I feel useless and so stupid.</i></Card.Body>
+          </Card>
+          <p><i></i></p>
           <p>Try to rephrase this. For example other people will help you rephrase it 
           with other perspectives:</p>
-          <p><i>“I have not prepared enough for the math test. I have gone through many tests in my 
-             life and succeeded. Next time I can prepare better. ”</i></p>
+          <Card>
+            <Card.Body><i>I have not prepared enough for the math test. I have gone through many tests in my 
+             life and succeeded. Next time I can prepare better.</i></Card.Body>
+          </Card>
+          <hr></hr>
+          <p style={{fontSize: "10px"}}>Note: This solution is not intended to be used for any medical purpose. Please contact your medical
+            professional if you have any questions about your health.</p>
         </Modal.Body>
 
         <Modal.Footer>
@@ -71,13 +78,13 @@ function ThoughtsForm({onDone}) {
     <Form onSubmit={submit}>
       <Form.Group className="mb-3" controlId="formBasicThought">
         <Form.Label>What's on your mind? </Form.Label>
-        <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
+          <Form.Control required ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
         <Form.Text className="text-muted">
           Hint: Just share what's burdening you atm. 
         </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
-        SEND
+        Send
       </Button>
     </Form>
   );
@@ -274,6 +281,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
           </Container>
         </Container>
         <Form.Control
+          required
           as="textarea"
           ref={textField}
           placeholder="Can you identify some patterns? Are there any assumptions made without reason?"
@@ -303,7 +311,7 @@ function App() {
   }, []);
 
   const onRespeakDone = React.useCallback(() => {
-    setActiveKey("thought");
+    setActiveKey("home");
     setToastMessage("You have respoken on another person's thought. Send more thoughts?");
   }, []);
 
@@ -316,19 +324,14 @@ function App() {
             <InfoDialog />
           </Container>
         </Navbar>
-        <Container>
-          <Row>
-            <Col xs={4}/>
-            <Col xs={4}>
-              <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
-                <Toast.Header>
-                  <strong>Thank you!</strong>
-                </Toast.Header>
-                <Toast.Body>{toastMessage}</Toast.Body>
-            </Toast>
-            </Col>
-          </Row>
-        </Container>
+        <ToastContainer position="top-center">
+          <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
+            <Toast.Header>
+              <strong>Thank you!</strong>
+            </Toast.Header>
+            <Toast.Body>{toastMessage}</Toast.Body>
+          </Toast>
+        </ToastContainer>
         <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
           <Container
             fluid
