@@ -152,7 +152,6 @@ function RespeakBubble({ respeak }) {
 
 function HistoryEntry({ thought }) {
   const [show, setShow] = useState(false);
-  const [showNewItemsBadge, setShowNewItemsBadge] = useState(true);
 
   const handleClose = () => {
     thought.updated = false;
@@ -161,7 +160,6 @@ function HistoryEntry({ thought }) {
 
   const handleShow = () => {
     setShow(true);
-    setShowNewItemsBadge(false);
   };
 
   return(
@@ -172,10 +170,10 @@ function HistoryEntry({ thought }) {
         onClick={handleShow}
         style={{cursor: 'pointer', userSelect: 'none'}}
       >
-        { showNewItemsBadge ?
+        { thought.notSeenRespeaks > 0 ?
           (<div className="fs-5" style={{float: 'right'}}>
           <Badge pill bg="success">
-            {thought.numRespeaks}
+            {thought.notSeenRespeaks}
           </Badge>
         </div>) : null }
         <Container className="fs-4">
