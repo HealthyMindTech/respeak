@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
   Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Tabs, Tab,
-  Toast, Badge, ToastContainer
+  Toast, Badge, ToastContainer, Card
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import AvatarImage from '../src/assets/img/avatar_2_h.png';
@@ -30,19 +30,26 @@ function InfoDialog() {
         </Modal.Header>
         <Modal.Body>
           <p>Share your thoughts and help others reframe theirs.</p>
-          <p>Write down what thoughts are burdening you at the moment, and click Send. </p>
-          <p>Afterward, help others reframe their thoughts. Can you find a different 
+          <p>Write down what thoughts are burdening you at the moment, and click SEND. </p>
+          <p>Afterwards, help others reframe their thoughts. Can you find a different 
           perspective for their challenge? </p>
           {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed. 
               And you can inspect the history of all the thoughts.</p> */}
           <hr></hr>
-          <p>Example</p>
-          <p>Thought:</p>
-          <p><i>“I failed the math test today and I feel useless and so stupid.”</i></p>
+          <p>Example thought:</p>
+          <Card>
+            <Card.Body><i>I failed the math test today and I feel useless and so stupid.</i></Card.Body>
+          </Card>
+          <p><i></i></p>
           <p>Try to rephrase this. For example other people will help you rephrase it 
           with other perspectives:</p>
-          <p><i>“I have not prepared enough for the math test. I have gone through many tests in my 
-             life and succeeded. Next time I can prepare better. ”</i></p>
+          <Card>
+            <Card.Body><i>I have not prepared enough for the math test. I have gone through many tests in my 
+             life and succeeded. Next time I can prepare better.</i></Card.Body>
+          </Card>
+          <hr></hr>
+          <p style={{fontSize: "10px"}}>Note: This solution is not intended to be used for any medical purpose. Please contact your medical
+            professional if you have any questions about your health.</p>
         </Modal.Body>
 
         <Modal.Footer>
