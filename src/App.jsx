@@ -372,21 +372,16 @@ function App() {
             <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
         </ToastContainer>
-        <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
+        <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundSize: '100% 30%', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
           <Container
             fluid
             style={
               {
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 1fr',
-                gridTemplateRows: '2fr 2fr 1fr',
-                height: '50vh',
+                height: '30vh'
               }
             }
-            className='p-0'>
-            <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', textAlign: 'center' }}>
-              <Image src={AvatarImage} style={{margin: '0 auto'}}/>
-            </Container>
+            className='avatar-grid p-0'>
+            <Image className="avatar" src={AvatarImage} style={{ gridColumn: '2 / span 1', gridRow: '3 / span 1', textAlign: 'center' }} />
           </Container>
 
           <Container fluid style={{
