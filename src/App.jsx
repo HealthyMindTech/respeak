@@ -286,7 +286,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
         <Form.Label>Please put a different perspective on the thought below. <br/> {PROMPT[prompt]} </Form.Label>
         <Container
         className="shadow mb-4 mt-2 br-3 p-3 bg-white"
-        style={{userSelect: 'none', borderRadius: '15px'}}
+        style={{borderRadius: '15px'}}
           >
           <Container className="fs-6 p-0">
             {thought.content}
