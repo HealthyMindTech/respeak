@@ -27,28 +27,20 @@ const ThoughtKeeper = ({children}) => {
         query(
           collection(firestore, THOUGHT_COLLECTION),
           where("owner", "==", auth.currentUser.uid),
-          orderBy("updatedAt", "asc"),
+          orderBy("updatedAt", "desc"),
         ),
         (snapshot) => {
           setMyThoughts(thoughts => {
-            const output = [...thoughts];
-            snapshot.docChanges().forEach((change) => {
-              if (change.type === "added") {
-                output.unshift(Object.assign({},
-                                             {id: change.doc.id},
-                                             change.doc.data()));
-              }
-              if (change.type === "modified") {
-                output.splice(change.oldIndex, 1);
-                output.splice(change.newIndex,
-                              0,
-                              Object.assign({},
-                                            {id: change.doc.id},
-                                            change.doc.data())
-                             );
+            const output = Object.fromEntries(thoughts.map(t => [t.id, t]));
+            
+            const res = snapshot.docs.map(doc => output[doc.id] ? output[doc.id] :
+                                          Object.assign({id: doc.id}, doc.data()))
+            snapshot.docChanges().forEach(change => {
+              if (change.type === 'modified') {
+                res[change.newIndex] = Object.assign({id: change.doc.id}, change.doc.data());
               }
             });
-            return output;
+            return res;
           });
         }
       );

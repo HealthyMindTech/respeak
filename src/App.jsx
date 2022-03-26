@@ -183,7 +183,7 @@ function HistoryEntry({ thought }) {
         </Container>
         <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
-          <span className="text-muted">{labelForTimeSinceDate(thought.createdAt.toDate())}</span>
+          <span className="text-muted">{labelForTimeSinceDate(thought.updatedAt.toDate())}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
     </Container>
