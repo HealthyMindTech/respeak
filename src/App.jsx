@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
   Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Tabs, Tab,
-  Toast, Badge
+  Toast, Badge, ToastContainer
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import AvatarImage from '../src/assets/img/avatar_2_h.png';
@@ -310,19 +310,14 @@ function App() {
             <InfoDialog />
           </Container>
         </Navbar>
-        <Container>
-          <Row>
-            <Col xs={4}/>
-            <Col xs={4}>
-              <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
-                <Toast.Header>
-                  <strong>Thank you!</strong>
-                </Toast.Header>
-                <Toast.Body>{toastMessage}</Toast.Body>
-            </Toast>
-            </Col>
-          </Row>
-        </Container>
+        <ToastContainer position="top-center">
+          <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
+            <Toast.Header>
+              <strong>Thank you!</strong>
+            </Toast.Header>
+            <Toast.Body>{toastMessage}</Toast.Body>
+          </Toast>
+        </ToastContainer>
         <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
           <Container
             fluid
