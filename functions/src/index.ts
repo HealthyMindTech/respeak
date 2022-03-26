@@ -15,7 +15,8 @@ function randomInt(min, max) {
 }
 
 async function findThoughtsWithNoRespeaks() {
-  return await admin.firestore().collection(THOUGHT_COLLECTION).where('numRespeaks', '==', 0).get();
+  const snapshot = await admin.firestore().collection(THOUGHT_COLLECTION).where('numRespeaks', '==', 0).get()
+  return snapshot.docs;
 }
 
 function getOpenAIResponse(reformulationCommand, thoughtText) {
@@ -65,27 +66,26 @@ async function addRespeakFunc(thoughtId, reformulationId, respeakText, author) {
 }
 
 
-export const openAIRespeak = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
+export const openAIRespeak = functions.pubsub.schedule('* * * * *').onRun(async (context) => {
 
     // Print list of throughts without respeaks
     const thoughts = await findThoughtsWithNoRespeaks();
-    thoughts.forEach(async thought => {
+    const thoughtPromises = thoughts.map(async thought => {
         const thoughtData = thought.data();
-        if (thoughtData.content !== null && thoughtData.content.length > 0) {
-            let reformulation = reformulations[randomInt(0, reformulations.length - 1)];
+        if (thoughtData.content === null || thoughtData.content.length === 0) return null;
+        let reformulation = reformulations[randomInt(0, reformulations.length - 1)];
 
-            getOpenAIResponse(reformulation.openai_command, thoughtData.content).then(response => {
-                if (response !== "") {
-                    console.log('Reformulation: ' + reformulation.openai_command);
-                    console.log('Thought: ' + thoughtData.content);
-                    console.log('Response: ' + response);
-                    addRespeakFunc(thought.id, reformulation.name, response, 'openai');
-                }
-            });
+        const response = await getOpenAIResponse(reformulation.openai_command, thoughtData.content);
+        if (response !== "") {
+            console.log('Reformulation: ' + reformulation.openai_command);
+            console.log('Thought: ' + thoughtData.content);
+            console.log('Response: ' + response);
+            await addRespeakFunc(thought.id, reformulation.name, response, 'openai');
         }
         
     });    
-    return
+    await Promise.all(thoughtPromises);
+    return null
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {

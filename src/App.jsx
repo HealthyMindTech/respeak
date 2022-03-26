@@ -110,6 +110,11 @@ function ThoughtBubble({ thought }) {
         <Col xs={10}>
           <Container className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
             {thought.content}
+            <div className="fs-6">
+            {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
+            <span className="text-white-50">{labelForTimeSinceDate(thought.createdAt.toDate())}</span>
+            { thought.updated ? <span> • <b>Updated</b></span> : null }
+          </div>
           </Container>
         </Col>
       </Row>
@@ -125,6 +130,11 @@ function RespeakBubble({ respeak }) {
           <Col xs={10}>
             <div className="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient rounded text-white">
               {respeak.content}
+              <div className="fs-6">
+                {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
+                <span className="text-white-50">{labelForTimeSinceDate(respeak.createdAt.toDate())}</span>
+                { respeak.updated ? <span> • <b>Updated</b></span> : null }
+              </div>
             </div>
           </Col>
           <Col xs={2} />
