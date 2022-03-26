@@ -94,24 +94,17 @@ export const noteSeenRespeaks = functions.region("europe-west3").https.onCall(as
     const firestore = admin.firestore();
 
     const uid = context.auth!.uid!;
-    const thought = admin.firestore().collection(THOUGHT_COLLECTION).doc(thoughtId);
-    firestore.runTransaction(async tx => {
-        const thoughtDoc = await tx.getAll(thought);
-        if (thoughtDoc.length === 0) {
-            return;
-        }
+    const thought = firestore.collection(THOUGHT_COLLECTION).doc(thoughtId);
+    const thoughtDoc = await thought.get();
 
-        const notSeenRespeaks = thoughtDoc[0].get("notSeenRespeaks");
-        if (uid !== thoughtDoc[0].get("owner")) {
-            return;
-        }
+    const notSeenRespeaks = thoughtDoc.get("notSeenRespeaks");
+    if (uid !== thoughtDoc.get("owner")) {
+        return;
+    }
 
-        if (notSeenRespeaks - seenRespeaks < 0) {
-            return;
-        }
+    const newNotSeenRespeaks = Math.max(notSeenRespeaks - seenRespeaks, 0);
 
-        tx.update(thought, { "notSeenRespeaks": notSeenRespeaks - seenRespeaks });
-    });
+    thought.update({ "notSeenRespeaks": newNotSeenRespeaks });
 
     return "done";
 });
