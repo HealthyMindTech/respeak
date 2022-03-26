@@ -6,6 +6,7 @@ import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext } from './context';
 import { addThought } from './firebaseUtils';
+import { labelForTimeSinceDate } from './utils';
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -128,7 +129,7 @@ function HistoryEntry({ thought }) {
         <div className="fs-4">{thought.content}</div>
         <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
-          <span className="text-muted">{thought.createdAt.toString()}</span>
+          <span className="text-muted">{labelForTimeSinceDate(thought.createdAt.toDate())}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
     </div>
