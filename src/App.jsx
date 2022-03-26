@@ -296,64 +296,72 @@ function App() {
     setActiveKey("thought");
     setToastMessage("You have respoken on another person's thought. Send more thoughts?");
   }, []);
-  
+
   return (
     <ThoughtKeeper>
       <ThemeProvider>
         <Navbar bg="light">
           <Container>
             <Navbar.Brand href="#home">Respeak</Navbar.Brand>
-            <InfoDialog /> 
+            <InfoDialog />
           </Container>
         </Navbar>
-        <Container
-          fluid
-          style={
-            {
-              display: 'grid',
-              gridTemplateColumns: '1fr 180px 1fr',
-              gridTemplateRows: '1fr 2fr 1fr',
-              height: '50vh',
-              backgroundImage: `url(${BgImage})`,
-              backgroundRepeat: 'no-repeat'
+        <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
+
+          <Container
+            fluid
+            style={
+              {
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr 1fr',
+                gridTemplateRows: '1fr 2fr 3fr',
+                height: '50vh',
+              }
             }
-          }
-          className='p-0'>
-          {/* <Image src={BgImage} className='img-fluid w-100 p-0 m-0' alt='...' /> */}
-          <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', background: '#fff', textAlign: 'center', verticalAlign: 'middle' }}>
-            <Image src={AvatarImage} />
-            <h2>Username</h2>
+            className='p-0'>
+            <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', textAlign: 'center', verticalAlign: 'middle' }}>
+              <Image src={AvatarImage} />
+              <h2 className="text-white">Username</h2>
+            </Container>
+          </Container>
+
+          <Container fluid style={{
+            background: "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 95%, rgba(255,255,255,0) 100%)",
+          }}>
+            <Row
+
+              style={
+                {
+                  paddingTop: '.5rem',
+                }}
+            >
+              <Col xl={4} lg={3} md={2} xs={1} />
+              <Col xl={4} lg={6} md={8} xs={10}>
+                <Tabs activeKey={activeKey}
+                  onSelect={(eventKey) => setActiveKey(eventKey)}
+                  id="uncontrolled-tab-example" className="mb-3">
+                  <Tab eventKey="home" title="Speak">
+                    <ThoughtsForm onDone={onThoughtDone} />
+                  </Tab>
+                  <Tab eventKey="respeak" title="Respeak">
+                    <RespeakForm onDone={onRespeakDone} />
+                  </Tab>
+                  <Tab eventKey="thought" title="Thoughts">
+                    <HistoryPane style={{ maxHeight: '100%', overflowY: 'scroll' }} />
+                  </Tab>
+                </Tabs>
+              </Col>
+              <Col xl={4} lg={3} md={2} xs={1} />
+            </Row>
+            <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)}>
+              <Toast.Header>
+                <strong>Thank you!</strong>
+              </Toast.Header>
+              <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
           </Container>
         </Container>
-        {/* <Image src={Avatar}  style={{position: 'relative', height: '50%'}}/> */}
-        <Container>
-          <Row>
-            <Col xs={2} />
-            <Col xs={8}>
-              <Tabs activeKey={activeKey}
-                    onSelect={(eventKey) => setActiveKey(eventKey)}
-                    id="uncontrolled-tab-example" className="mb-3">
-                <Tab eventKey="home" title="Speak">
-                  <ThoughtsForm onDone={onThoughtDone} />
-                </Tab>
-                <Tab eventKey="respeak" title="Respeak">
-                  <RespeakForm onDone={onRespeakDone} />
-                </Tab>
-                <Tab eventKey="thought" title="Thoughts">
-                  <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
-                </Tab>
-              </Tabs>
-            </Col>
-            <Col xs={2} />
-          </Row>
-          <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)}>
-            <Toast.Header>
-              <strong>Thank you!</strong>
-            </Toast.Header>
-            <Toast.Body>{toastMessage}</Toast.Body>
-          </Toast>
-        </Container>
-    </ThemeProvider>
+      </ThemeProvider>
     </ThoughtKeeper>
   );
 }
