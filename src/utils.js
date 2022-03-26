@@ -6,10 +6,6 @@ export function labelForTimeSinceDate(date) {
   if (interval > 1) {
     return Math.floor(interval) + "y";
   }
-  interval = seconds / 2592000;
-  if (interval > 1) {
-    return Math.floor(interval) + "m";
-  }
   interval = seconds / 86400;
   if (interval > 1) {
     return Math.floor(interval) + "d";
@@ -20,7 +16,7 @@ export function labelForTimeSinceDate(date) {
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval) + " min";
+    return Math.floor(interval) + "m";
   }
   return "Just now";
 }
