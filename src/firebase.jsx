@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { collection, getFirestore, onSnapshot } from "firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { getAuth, signInAnonymously, connectAuthEmulator } from "firebase/auth";
+import { collection, getFirestore, onSnapshot, connectFirestoreEmulator } from "firebase/firestore";
          
 const firebaseConfig = {
   apiKey: "AIzaSyCoz1WdryRt-XN7YcrdZLH4DA6GEoUFIys",
@@ -12,10 +11,16 @@ const firebaseConfig = {
   appId: "1:89806658497:web:a6149b9bafcf198ffd6d40"
 };
 
+console.log(process.env);
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+if (process.env.REACT_APP_USE_EMULATOR) {
+  connectAuthEmulator(auth, "http://localhost:9099");
+}
 const firestore = getFirestore(app);
-const functions = getFunctions(app);
+if (process.env.REACT_APP_USE_EMULATOR) {
+  connectFirestoreEmulator(firestore, "localhost", 8080);
+}
 
 signInAnonymously(auth)
   .then(() => {
