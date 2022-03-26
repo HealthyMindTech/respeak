@@ -305,8 +305,10 @@ function RespeakFormEntry({thoughtList, onDone}) {
       <Button variant="dark" type="submit">
         Send
       </Button>
-      <Button variant="link" style={{float: "right"}} onClick={() => setThoughtIndex((i) => {return i === thoughtList.length - 1 ? 0 : i + 1})}>
-        Get another Thought
+      <Button variant="light"
+              style={{float: "right"}}
+              onClick={() => setThoughtIndex((i) => {return i === thoughtList.length - 1 ? 0 : i + 1})}>
+        Jump to other thought
       </Button>
     </Form>);
 }
