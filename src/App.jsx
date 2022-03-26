@@ -323,7 +323,14 @@ function HistoryTabTitle() {
       const newThoughts = myThoughts.reduce((acc, thought) => {
         return acc + thought.notSeenRespeaks;
       }, 0);
-      return (<><JournalBookmarkFill size={28}/><div>Thoughts{ newThoughts > 0 ? <span className="fs-6"><Badge pill bg="info"> {newThoughts}</Badge></span> : null}</div></>)
+      return (<>
+        <div style={{width: 0, height: 0, position: "relative"}}>
+          { newThoughts > 0 ? <span className="fs-6" style={{position: "relative", left: 51, top: 12}}>
+          <Badge pill bg="info"> {newThoughts}</Badge></span> : null}
+        </div>
+        <JournalBookmarkFill size={28}/>
+          <div class="fs-4">Thoughts</div>
+      </>)
     }}
   </MyThoughtsContext.Consumer>
   );
@@ -386,10 +393,10 @@ function App() {
                 <Tabs activeKey={activeKey}
                   onSelect={(eventKey) => setActiveKey(eventKey)}
                   id="uncontrolled-tab-example" className="mb-3 justify-content-center">
-                  <Tab eventKey="home" title={<><ChatSquareText size={28}/><div>Speak</div></>}>
+                  <Tab eventKey="home" title={<><ChatSquareText size={28}/><div class="fs-4">Speak</div></>}>
                     <ThoughtsForm onDone={onThoughtDone} />
                   </Tab>
-                  <Tab eventKey="respeak" title={<><ChatRightHeart size={28}/><div>Respeak</div></>}>
+                  <Tab eventKey="respeak" title={<><ChatRightHeart size={28}/><div class="fs-4">Respeak</div></>}>
                     <RespeakForm onDone={onRespeakDone} />
                   </Tab>
                   <Tab eventKey="thought" title={<HistoryTabTitle/>}>
