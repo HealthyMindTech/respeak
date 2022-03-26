@@ -370,7 +370,7 @@ function App() {
               <Col xl={4} lg={6} md={8} xs={10}>
                 <Tabs activeKey={activeKey}
                   onSelect={(eventKey) => setActiveKey(eventKey)}
-                  id="uncontrolled-tab-example" className="mb-3">
+                  id="uncontrolled-tab-example" className="mb-3 justify-content-center">
                   <Tab eventKey="home" title="Speak">
                     <ThoughtsForm onDone={onThoughtDone} />
                   </Tab>
