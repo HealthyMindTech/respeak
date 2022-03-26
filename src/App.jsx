@@ -13,6 +13,16 @@ import { addThought, addRespeak, getRespeaks, noteSeenRespeaks } from './firebas
 import { labelForTimeSinceDate } from './utils';
 import './index.css';
 
+const PROMPT = [
+  "How would you think about this statement in 10 years? What would you focus on?",
+  "How would you describe this thought as a positive one?",
+  "What is this person thinking this way? Try asking yourself \"why\" until you find the root cause.",
+  "Is this thought intense emotionally? How would you write it after \"cooling down\"?",
+  "What emotions are involved in the thought? Name them.",
+  "What part of this thought is under control of this person and what is outside of their control?",
+  "Can you identify some patterns? Are there any assumptions made without reason?"
+];
+
 function InfoDialog() {
   const [show, setShow] = useState(false);
 
@@ -32,9 +42,9 @@ function InfoDialog() {
         <Modal.Body>
           <p>Share your thoughts and help others reframe theirs.</p>
           <p>Write down what thoughts are burdening you at the moment, and click SEND. </p>
-          <p>Afterwards, help others reframe their thoughts. Can you find a different 
+          <p>Afterwards, help others reframe their thoughts. Can you find a different
           perspective for their challenge? </p>
-          {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed. 
+          {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed.
               And you can inspect the history of all the thoughts.</p> */}
           <hr></hr>
           <p>Example thought:</p>
@@ -42,10 +52,10 @@ function InfoDialog() {
             <Card.Body><i>I failed the math test today and I feel useless and so stupid.</i></Card.Body>
           </Card>
           <p><i></i></p>
-          <p>Try to rephrase this. For example other people will help you rephrase it 
+          <p>Try to rephrase this. For example other people will help you rephrase it
           with other perspectives:</p>
           <Card>
-            <Card.Body><i>I have not prepared enough for the math test. I have gone through many tests in my 
+            <Card.Body><i>I have not prepared enough for the math test. I have gone through many tests in my
              life and succeeded. Next time I can prepare better.</i></Card.Body>
           </Card>
           <hr></hr>
@@ -73,14 +83,14 @@ function ThoughtsForm({onDone}) {
       onDone();
     }
   }, [thoughtField, onDone]);
-  
+
   return(
     <Form onSubmit={submit}>
       <Form.Group className="mb-3" controlId="formBasicThought">
         <Form.Label>What's on your mind? </Form.Label>
           <Form.Control required ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
         <Form.Text className="text-muted">
-          Hint: Just share what's burdening you atm. 
+          Hint: Just share what's burdening you atm.
         </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
@@ -171,18 +181,18 @@ function HistoryEntry({ thought }) {
     <>
       <Container
         key={thought.id}
-        className="mb-4 mt-4 br-4 p-3 bg-white" 
+        className="mb-4 mt-4 br-4 p-3 bg-white"
         onClick={handleShow}
         style={
           {
-            cursor: 'pointer', 
-            userSelect: 'none', 
+            cursor: 'pointer',
+            userSelect: 'none',
             borderRadius: '15px',
             boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px'
           }
         }>
 
-        { thought.notSeenRespeaks ? 
+        { thought.notSeenRespeaks ?
           (<div className="fs-5" style={{float: 'right'}}>
             <Badge pill bg="info">
               {thought.notSeenRespeaks}
@@ -198,7 +208,7 @@ function HistoryEntry({ thought }) {
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
     </Container>
-    
+
     <Modal show={show} onHide={handleClose}>
       <Modal.Body>
         <ThoughtModal thought={thought} />
@@ -231,6 +241,7 @@ function HistoryPane() {
 function RespeakFormEntry({thoughtList, onDone}) {
   const [thought, setThought] = useState(null);
   const textField = useRef();
+  const [prompt, setPrompt] = useState(Math.floor(Math.random() * PROMPT.length));
 
   useEffect(() => {
     setThought(thought => {
@@ -241,10 +252,10 @@ function RespeakFormEntry({thoughtList, onDone}) {
       return thought;
     });
   }, [thoughtList]);
-  
+
   const passRespeak = useCallback((e) => {
     e.preventDefault();
-    
+
     if (thought === null) {
       if (thoughtList.length > 0) {
         setThought(thoughtList[0]);
@@ -257,7 +268,8 @@ function RespeakFormEntry({thoughtList, onDone}) {
       }
     }
     addRespeak(thought.id, textField.current.value, null);
-    
+    setPrompt(Math.floor(Math.random() * PROMPT.length));
+
     textField.current.value = "";
     if (onDone) {
       onDone();
@@ -267,13 +279,13 @@ function RespeakFormEntry({thoughtList, onDone}) {
   if (!thought) {
     return null;
   }
-    
+
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
-        <Form.Label>What's another perspective on the following thought: </Form.Label>
+        <Form.Label>Please put a different perspective on the thought below. <br/> {PROMPT[prompt]} </Form.Label>
         <Container
-        className="shadow mb-4 mt-2 br-3 p-3 bg-white" 
+        className="shadow mb-4 mt-2 br-3 p-3 bg-white"
         style={{userSelect: 'none', borderRadius: '15px'}}
           >
           <Container className="fs-6 p-0">
@@ -292,7 +304,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
       </Button>
     </Form>);
 }
-    
+
 function RespeakForm({onDone}) {
   return(
     <WaitingThoughtsContext.Consumer>
