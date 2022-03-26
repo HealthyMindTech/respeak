@@ -74,6 +74,47 @@ function ThoughtsForm() {
 );
 }
 
+function displayThought(thought) {
+  // return () => null;
+}
+
+function HistoryEntry(thought) {
+  return(
+    <div 
+        class="shadow-sm mb-4 br-4 p-3 bg-white rounded" 
+        onClick={displayThought(thought)}
+        style={{cursor: 'pointer', userSelect: 'none'}}>
+      <div class="h4">{thought.content}</div>
+      <div>
+        {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
+        <span class="fs-6 text-muted">{thought.owner}</span>
+      </div>
+    </div>
+  );
+}
+
+function HistoryPane() {
+  let thoughts = [
+    {
+      owner: "health",
+      content: "I'm depressed",
+      createdAt: "1234",
+    },
+    {
+      owner: "jassper",
+      content: "No hope for me",
+      createdAt: "1234",
+    },
+    {
+      owner: "hack",
+      content: "I need help",
+      createdAt: "1234",
+    },
+  ];
+  
+  return thoughts.map(t => HistoryEntry(t));
+}
+
 function RespeakForm() {
   return(
     <Form>
@@ -95,7 +136,6 @@ function RespeakForm() {
   );
 }
 
-
 function App() {
   return (
     
@@ -112,7 +152,7 @@ function App() {
         <Row>
           <Col xs={2} />
           <Col xs={8}>
-          <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+          <Tabs defaultActiveKey="history" id="uncontrolled-tab-example" className="mb-3">
               <Tab eventKey="home" title="Thoughts">
                 <ThoughtsForm/>
               </Tab>
@@ -120,7 +160,7 @@ function App() {
               <RespeakForm/>
               </Tab>
               <Tab eventKey="history" title="History">
-              History of thoughts
+              <HistoryPane />
               </Tab>
             </Tabs>
           </Col>
