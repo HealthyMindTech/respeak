@@ -73,7 +73,7 @@ function ThoughtsForm({onDone}) {
           Hint: Just share what's burdening you atm. 
         </Form.Text>
       </Form.Group>
-      <Button variant="dark" type="submit" style={{float: 'right'}}>
+      <Button variant="dark" type="submit">
         SEND
       </Button>
     </Form>
