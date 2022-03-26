@@ -30,7 +30,7 @@ Then when starting up the frontend developer server, run:
 $ REACT_APP_USE_EMULATOR=1 npm run start
 ```
 
-You should be connect to the emulator now.
+You should be connected to the emulator now.
 
 
 To deploy to firebase. Make sure you have the firebase cli installed:
