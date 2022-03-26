@@ -240,19 +240,18 @@ function HistoryPane() {
 
 function RespeakFormEntry({thoughtList, onDone}) {
   const [thought, setThought] = useState(null);
-  const [thoughtIndex, setThoughtIndex] = useState(0);
   const textField = useRef();
   const [prompt, setPrompt] = useState(Math.floor(Math.random() * PROMPT.length));
 
   useEffect(() => {
     setThought(thought => {
-      if (thoughtList.length > 0) {
-        return thoughtList[thoughtIndex];
+      if (thoughtList.length > 0 && thought === null) {
+        return thoughtList[0];
       }
 
       return thought;
     });
-  }, [thoughtList, thoughtIndex]);
+  }, [thoughtList]);
 
   const passRespeak = useCallback((e) => {
     e.preventDefault();
@@ -304,11 +303,6 @@ function RespeakFormEntry({thoughtList, onDone}) {
       </Form.Group>
       <Button variant="dark" type="submit">
         Send
-      </Button>
-      <Button variant="light"
-              style={{float: "right"}}
-              onClick={() => setThoughtIndex((i) => {return i === thoughtList.length - 1 ? 0 : i + 1})}>
-        Skip
       </Button>
     </Form>);
 }
