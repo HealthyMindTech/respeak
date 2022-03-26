@@ -59,7 +59,8 @@ function ThoughtsForm({onDone}) {
   const thoughtField = useRef();
   const submit = useCallback(async (e) => {
     e.preventDefault();
-    await addThought(thoughtField.current.value);
+    addThought(thoughtField.current.value);
+    thoughtField.current.value = "";
     if (onDone) {
       onDone();
     }
@@ -218,7 +219,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
     });
   }, [thoughtList]);
   
-  const passRespeak = useCallback(async (e) => {
+  const passRespeak = useCallback((e) => {
     e.preventDefault();
     
     if (thought === null) {
@@ -232,7 +233,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
         }
       }
     }
-    await addRespeak(thought.id, textField.current.value, null);
+    addRespeak(thought.id, textField.current.value, null);
     
     textField.current.value = "";
     if (onDone) {
