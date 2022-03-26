@@ -170,7 +170,7 @@ function HistoryEntry({ thought }) {
 
         { thought.notSeenRespeaks ? 
           (<div className="fs-5" style={{float: 'right'}}>
-            <Badge pill bg="success">
+            <Badge pill bg="info">
               {thought.notSeenRespeaks}
             </Badge>
            </div>) : null
@@ -282,6 +282,19 @@ function RespeakForm({onDone}) {
   );
 }
 
+function HistoryTabTitle() {
+  return (
+  <MyThoughtsContext.Consumer>
+    {(myThoughts) => {
+      const newThoughts = myThoughts.reduce((acc, thought) => {
+        return acc + thought.notSeenRespeaks;
+      }, 0);
+      return (<>Thoughts { newThoughts > 0 ? <span className="fs-6"><Badge pill bg="info">{newThoughts}</Badge></span> : null}</>)
+    }}
+  </MyThoughtsContext.Consumer>
+  );
+}
+
 function App() {
   const [activeKey, setActiveKey] = useState("home");
   const [toastMessage, setToastMessage] = useState(null);
@@ -356,7 +369,7 @@ function App() {
                   <Tab eventKey="respeak" title="Respeak">
                     <RespeakForm onDone={onRespeakDone} />
                   </Tab>
-                  <Tab eventKey="thought" title="Thoughts">
+                  <Tab eventKey="thought" title={<HistoryTabTitle/>}>
                     <HistoryPane style={{ maxHeight: '100%', overflowY: 'scroll' }} />
                   </Tab>
                 </Tabs>
