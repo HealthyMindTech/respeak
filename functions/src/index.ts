@@ -24,22 +24,23 @@ export const helloWorld = functions.region("europe-west3").https.onRequest(async
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
-    console.log('called add thought');
-    /*
-    TODO:
-        - Put the post in the database.
-        - Figure out which users need to receive the post.
-    */
-    const firestore = admin.firestore();
-    const doc = await firestore.collection('thought').add(
+    await admin.firestore().collection('thought').add(
         {
-            // owner: context.auth?.uid,
+            owner: context.auth!.uid,
             content: data.content,
-            createdAt: admin.firestore.Timestamp.now(),
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            numRespeaks: 0,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            notSeenRespeaks: 0,
         },
     );
 
-    await firestore.collection('waitingThought').add({ id: doc.id, numRespeaks: 0 });
-
     return "done";
+});
+
+export const addSpeak = functions.region("europe-west3").https.onCall(async (data, context) => {
+    const firestore = admin.firestore();
+    const thoughtId = data.thoughtId;
+
+
 });

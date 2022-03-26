@@ -9,6 +9,7 @@ import { postThought } from './firebaseUtils';
 
 
 function InfoDialog() {
+  console.log(process.env.NODE_ENV);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);

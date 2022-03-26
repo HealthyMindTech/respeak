@@ -21,7 +21,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "deploy-frontend": "npm run build && firebase deploy --only hosting"
   },
   "lint-staged": {
     "**/*.js": [
