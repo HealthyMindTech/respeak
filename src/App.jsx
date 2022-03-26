@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
-  Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab,
+  Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Tabs, Tab,
   Toast, Badge
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
@@ -257,11 +257,15 @@ function RespeakFormEntry({thoughtList, onDone}) {
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
-        <Form.Label>What's another perspective on the following: </Form.Label>
-        <Card body border="warning" bg="warning">
-          <i>{thought.content}</i>
-        </Card>
-        <br></br>
+        <Form.Label>What's another perspective on the following thought: </Form.Label>
+        <Container
+        className="shadow mb-4 mt-2 br-3 p-3 bg-white" 
+        style={{userSelect: 'none', borderRadius: '15px'}}
+          >
+          <Container className="fs-6 p-0">
+            {thought.content}
+          </Container>
+        </Container>
         <Form.Control
           as="textarea"
           ref={textField}
