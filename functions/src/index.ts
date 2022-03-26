@@ -2,6 +2,9 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import axios from "axios";
 
+const THOUGHT_COLLECTION = 'thought';
+const RESPEAK_COLLECTION = 'respeak';
+
 admin.initializeApp();
 
 export const helloWorld = functions.region("europe-west3").https.onRequest(async (request, response) => {
@@ -24,7 +27,7 @@ export const helloWorld = functions.region("europe-west3").https.onRequest(async
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
-    await admin.firestore().collection('thought').add(
+    await admin.firestore().collection(THOUGHT_COLLECTION).add(
         {
             owner: context.auth!.uid,
             content: data.content,
@@ -38,9 +41,27 @@ export const addThought = functions.region("europe-west3").https.onCall(async (d
     return "done";
 });
 
-export const addSpeak = functions.region("europe-west3").https.onCall(async (data, context) => {
+export const addRespeak = functions.region("europe-west3").https.onCall(async (data, context) => {
     const firestore = admin.firestore();
     const thoughtId = data.thoughtId;
 
+    const thought = firestore.collection(THOUGHT_COLLECTION).doc(thoughtId);
+    const batch = firestore.batch();
 
+    const newRespeak = thought.collection(RESPEAK_COLLECTION).doc();
+    batch.create(newRespeak, {
+        content: data.content,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        owner: context.auth!.uid,
+        perspective: data.perspective
+    });
+
+    batch.update(thought, {
+        numRespeaks: admin.firestore.FieldValue.increment(1),
+        notSeenRespeaks: admin.firestore.FieldValue.increment(1),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+    return "done";
 });

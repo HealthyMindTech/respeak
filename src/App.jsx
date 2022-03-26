@@ -158,7 +158,7 @@ function App() {
                 <ThoughtsForm/>
               </Tab>
               <Tab eventKey="profile" title="Respeaks">
-              <RespeakForm/>
+                <RespeakForm />
               </Tab>
               <Tab eventKey="history" title="History">
               <HistoryPane />
