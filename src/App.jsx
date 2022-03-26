@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
 import {
-  Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab,
-  Toast, Badge
+  Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Tabs, Tab,
+  Toast, Badge, ToastContainer, Card
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import AvatarImage from '../src/assets/img/avatar_2_h.png';
@@ -11,6 +11,7 @@ import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
 import { addThought, addRespeak, getRespeaks, noteSeenRespeaks } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
+import './index.css';
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -31,18 +32,25 @@ function InfoDialog() {
         <Modal.Body>
           <p>Share your thoughts and help others reframe theirs.</p>
           <p>Write down what thoughts are burdening you at the moment, and click SEND. </p>
-          <p>Afterward, help others reframe their thoughts. Can you find a different 
+          <p>Afterwards, help others reframe their thoughts. Can you find a different 
           perspective for their challenge? </p>
           {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed. 
               And you can inspect the history of all the thoughts.</p> */}
           <hr></hr>
-          <p>Example</p>
-          <p>Thought:</p>
-          <p><i>“I failed the math test today and I feel useless and so stupid.”</i></p>
+          <p>Example thought:</p>
+          <Card>
+            <Card.Body><i>I failed the math test today and I feel useless and so stupid.</i></Card.Body>
+          </Card>
+          <p><i></i></p>
           <p>Try to rephrase this. For example other people will help you rephrase it 
           with other perspectives:</p>
-          <p><i>“I have not prepared enough for the math test. I have gone through many tests in my 
-             life and succeeded. Next time I can prepare better. ”</i></p>
+          <Card>
+            <Card.Body><i>I have not prepared enough for the math test. I have gone through many tests in my 
+             life and succeeded. Next time I can prepare better.</i></Card.Body>
+          </Card>
+          <hr></hr>
+          <p style={{fontSize: "10px"}}>Note: This solution is not intended to be used for any medical purpose. Please contact your medical
+            professional if you have any questions about your health.</p>
         </Modal.Body>
 
         <Modal.Footer>
@@ -70,13 +78,13 @@ function ThoughtsForm({onDone}) {
     <Form onSubmit={submit}>
       <Form.Group className="mb-3" controlId="formBasicThought">
         <Form.Label>What's on your mind? </Form.Label>
-        <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
+          <Form.Control required ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
         <Form.Text className="text-muted">
           Hint: Just share what's burdening you atm. 
         </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
-        SEND
+        Send
       </Button>
     </Form>
   );
@@ -163,10 +171,16 @@ function HistoryEntry({ thought }) {
     <>
       <Container
         key={thought.id}
-        className="shadow mb-4 mt-4 br-4 p-3 bg-white" 
+        className="mb-4 mt-4 br-4 p-3 bg-white" 
         onClick={handleShow}
-        style={{cursor: 'pointer', userSelect: 'none', borderRadius: '15px'}}
-      >
+        style={
+          {
+            cursor: 'pointer', 
+            userSelect: 'none', 
+            borderRadius: '15px',
+            boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px'
+          }
+        }>
 
         { thought.notSeenRespeaks ? 
           (<div className="fs-5" style={{float: 'right'}}>
@@ -257,12 +271,17 @@ function RespeakFormEntry({thoughtList, onDone}) {
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
-        <Form.Label>What's another perspective on the following: </Form.Label>
-        <Card body border="warning" bg="warning">
-          <i>{thought.content}</i>
-        </Card>
-        <br></br>
+        <Form.Label>What's another perspective on the following thought: </Form.Label>
+        <Container
+        className="shadow mb-4 mt-2 br-3 p-3 bg-white" 
+        style={{userSelect: 'none', borderRadius: '15px'}}
+          >
+          <Container className="fs-6 p-0">
+            {thought.content}
+          </Container>
+        </Container>
         <Form.Control
+          required
           as="textarea"
           ref={textField}
           placeholder="Can you identify some patterns? Are there any assumptions made without reason?"
@@ -305,7 +324,7 @@ function App() {
   }, []);
 
   const onRespeakDone = React.useCallback(() => {
-    setActiveKey("thought");
+    setActiveKey("home");
     setToastMessage("You have respoken on another person's thought. Send more thoughts?");
   }, []);
 
@@ -318,19 +337,14 @@ function App() {
             <InfoDialog />
           </Container>
         </Navbar>
-        <Container>
-          <Row>
-            <Col xs={4}/>
-            <Col xs={4}>
-              <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
-                <Toast.Header>
-                  <strong>Thank you!</strong>
-                </Toast.Header>
-                <Toast.Body>{toastMessage}</Toast.Body>
-            </Toast>
-            </Col>
-          </Row>
-        </Container>
+        <ToastContainer position="top-center">
+          <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
+            <Toast.Header>
+              <strong>Thank you!</strong>
+            </Toast.Header>
+            <Toast.Body>{toastMessage}</Toast.Body>
+          </Toast>
+        </ToastContainer>
         <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
           <Container
             fluid
@@ -351,13 +365,7 @@ function App() {
           <Container fluid style={{
             background: "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 95%, rgba(255,255,255,0) 100%)",
           }}>
-            <Row
-
-              style={
-                {
-                  paddingTop: '.5rem',
-                }}
-            >
+            <Row style={{ paddingTop: '.7rem' }} >
               <Col xl={4} lg={3} md={2} xs={1} />
               <Col xl={4} lg={6} md={8} xs={10}>
                 <Tabs activeKey={activeKey}
