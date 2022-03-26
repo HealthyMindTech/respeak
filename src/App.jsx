@@ -240,18 +240,19 @@ function HistoryPane() {
 
 function RespeakFormEntry({thoughtList, onDone}) {
   const [thought, setThought] = useState(null);
+  const [thoughtIndex, setThoughtIndex] = useState(0);
   const textField = useRef();
   const [prompt, setPrompt] = useState(Math.floor(Math.random() * PROMPT.length));
 
   useEffect(() => {
     setThought(thought => {
-      if (thought === null && thoughtList.length > 0) {
-        return thoughtList[0];
+      if (thoughtList.length > 0) {
+        return thoughtList[thoughtIndex];
       }
 
       return thought;
     });
-  }, [thoughtList]);
+  }, [thoughtList, thoughtIndex]);
 
   const passRespeak = useCallback((e) => {
     e.preventDefault();
@@ -279,7 +280,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
   if (!thought) {
     return null;
   }
-
+  console.log(thoughtList);
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
@@ -299,11 +300,14 @@ function RespeakFormEntry({thoughtList, onDone}) {
           placeholder="What's another perspective on the thought above?"
           rows="3" />
         <Form.Text className="text-muted">
-          {PROMPT[prompt]}
+          Hint: {PROMPT[prompt]}
         </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
         Send
+      </Button>
+      <Button variant="link" style={{float: "right"}} onClick={() => setThoughtIndex((i) => {return i === thoughtList.length - 1 ? 0 : i + 1})}>
+        Get another Thought
       </Button>
     </Form>);
 }
