@@ -283,11 +283,11 @@ function RespeakFormEntry({thoughtList, onDone}) {
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
-        <Form.Label>Please put a different perspective on the thought below. <br/> {PROMPT[prompt]} </Form.Label>
+        <Form.Label>Please put a different perspective on the thought below.</Form.Label>
         <Container
-        className="shadow mb-4 mt-2 br-3 p-3 bg-white"
-        style={{borderRadius: '15px'}}
-          >
+          className="shadow mb-4 mt-2 br-3 p-3 bg-white"
+          style={{borderRadius: '15px'}}
+        >
           <Container className="fs-6 p-0">
             {thought.content}
           </Container>
@@ -296,8 +296,11 @@ function RespeakFormEntry({thoughtList, onDone}) {
           required
           as="textarea"
           ref={textField}
-          placeholder="Can you identify some patterns? Are there any assumptions made without reason?"
+          placeholder="What's another perspective on the thought above?"
           rows="3" />
+        <Form.Text className="text-muted">
+          {PROMPT[prompt]}
+        </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
         Send
