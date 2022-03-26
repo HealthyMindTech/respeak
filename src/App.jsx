@@ -84,7 +84,7 @@ function ThoughtsForm({onDone}) {
 
 function ThoughtModal({ thought }) {
   const [respeaks, setRespeaks] = useState([]);
-  
+
   useEffect(() => {
     let running = true;
     async function f() {
@@ -111,7 +111,7 @@ function ThoughtBubble({ thought }) {
       <Row>
         <Col xs={2} />
         <Col xs={10}>
-          <Container className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
+          <Container className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient text-white" style={{ borderRadius: '15px' }}>
             {thought.content}
             <div className="fs-6">
             {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
@@ -131,7 +131,7 @@ function RespeakBubble({ respeak }) {
       <div>
         <Row>
           <Col xs={10}>
-            <div className="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient rounded text-white">
+            <div className="shadow-sm mb-1 br-4 p-3 bg-success bg-gradient text-white" style={{ borderRadius: '15px' }}>
               {respeak.content}
               <div className="fs-6">
                 {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
@@ -142,9 +142,6 @@ function RespeakBubble({ respeak }) {
           </Col>
           <Col xs={2} />
         </Row>
-      </div>
-      <div className="text-muted">
-        <small>{respeak.author}</small>
       </div>
     </div>
   );
@@ -166,9 +163,9 @@ function HistoryEntry({ thought }) {
     <>
       <Container
         key={thought.id}
-        className="shadow mb-4 mt-4 br-4 p-3 bg-white rounded" 
+        className="shadow mb-4 mt-4 br-4 p-3 bg-white" 
         onClick={handleShow}
-        style={{cursor: 'pointer', userSelect: 'none'}}
+        style={{cursor: 'pointer', userSelect: 'none', borderRadius: '15px'}}
       >
         { thought.notSeenRespeaks > 0 ?
           (<div className="fs-5" style={{float: 'right'}}>
@@ -176,10 +173,10 @@ function HistoryEntry({ thought }) {
             {thought.notSeenRespeaks}
           </Badge>
         </div>) : null }
-        <Container className="fs-4">
+        <Container className="fs-6 p-0">
           {thought.content}
         </Container>
-        <div className="fs-6">
+        <div className="small">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
           <span className="text-muted">{labelForTimeSinceDate(thought.updatedAt.toDate())}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
@@ -307,7 +304,6 @@ function App() {
           </Container>
         </Navbar>
         <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
-
           <Container
             fluid
             style={
