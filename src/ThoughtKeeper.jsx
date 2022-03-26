@@ -9,10 +9,21 @@ const ThoughtKeeper = ({children}) => {
   const [myThoughts, setMyThoughts] = useState([]);
   
   useEffect(() => {
+    const unsubscribes = [];
+    const cleanUp = () => {
+      unsubscribes.forEach((unsub) => {
+        try {
+          unsub();
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    };
+          
     const f = async () => {
       await signIn();
 
-      onSnapshot(
+      const myThoughtsUnsubscribe = onSnapshot(
         query(
           collection(firestore, THOUGHT_COLLECTION),
           where("owner", "==", auth.currentUser.uid),
@@ -41,8 +52,10 @@ const ThoughtKeeper = ({children}) => {
           });
         }
       );
-        
-      onSnapshot(
+
+      unsubscribes.push(myThoughtsUnsubscribe);
+      
+      const waitingThoughtsUnsubscribe = onSnapshot(
         query(
           collection(firestore, THOUGHT_COLLECTION),
           orderBy("numRespeaks", "asc"),
@@ -83,8 +96,12 @@ const ThoughtKeeper = ({children}) => {
             return newThoughts;
           });
         });
+      
+      unsubscribes.push(waitingThoughtsUnsubscribe);
     };
     f();
+    
+    return cleanUp();
   }, []);
 
   return (

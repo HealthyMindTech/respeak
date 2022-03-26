@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useRef } from "react";
 import { QuestionCircle } from 'react-bootstrap-icons';
-import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab} from 'react-bootstrap';
+import {
+  Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab,
+  Toast
+} from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
-import { MyThoughtsContext } from './context';
+import { MyThoughtsContext, WaitingThoughtsContext } from './context';
 import { addThought } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
 
@@ -51,25 +54,28 @@ function InfoDialog() {
   );
 }
 
-function ThoughtsForm() {
+function ThoughtsForm({onDone}) {
   const thoughtField = useRef();
-  const submit = useCallback((e) => {
+  const submit = useCallback(async (e) => {
     e.preventDefault();
-    addThought(thoughtField.current.value);
+    await addThought(thoughtField.current.value);
+    if (onDone) {
+      onDone();
+    }
   }, [thoughtField]);
   
   return(
     <Form onSubmit={submit}>
       <Form.Group className="mb-3" controlId="formBasicThought">
-        <Form.Label>What's on your mind?</Form.Label>
-          <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
-          <Form.Text className="text-muted">
-            Hint: Just share what's burdening you atm. 
-          </Form.Text>
-    </Form.Group>
-    <Button variant="dark" type="submit" style={{float: 'right'}}>
-      SEND
-    </Button>
+        <Form.Label>What's on your mind? </Form.Label>
+        <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
+        <Form.Text className="text-muted">
+          Hint: Just share what's burdening you atm. 
+        </Form.Text>
+      </Form.Group>
+      <Button variant="dark" type="submit" style={{float: 'right'}}>
+        SEND
+      </Button>
     </Form>
   );
 }
@@ -121,18 +127,19 @@ function HistoryEntry({ thought }) {
 
   return(
     <>
-      <div
+      <Container
         key={thought.id}
         className="shadow mb-4 mt-4 br-4 p-3 bg-white rounded" 
         onClick={handleShow}
-        style={{cursor: 'pointer', userSelect: 'none'}}>
-        <div className="fs-4">{thought.content}</div>
+        style={{cursor: 'pointer', userSelect: 'none'}}
+      >
+        <Container className="fs-4">{thought.content}</Container>
         <div className="fs-6">
           {/* <div style={{display: 'inline', width: 5, height: 5, background: 'blue'}} /> */}
           <span className="text-muted">{labelForTimeSinceDate(thought.createdAt.toDate())}</span>
           { thought.updated ? <span> • <b>Updated</b></span> : null }
         </div>
-    </div>
+    </Container>
     
     <Modal show={show} onHide={handleClose}>
       <Modal.Body>
@@ -150,84 +157,6 @@ function HistoryEntry({ thought }) {
 }
 
 function HistoryPane() {
-  // const [thoughts] = useState([
-  //   {
-  //     content: "I'm depressed",
-  //     createdAt: "1y",
-  //     updated: false,
-  //     respeaks: [],
-  //     id: 1,
-  //   },
-  //   {
-  //     content: "No hope for me",
-  //     createdAt: "2w",
-  //     updated: true,
-  //     respeaks: [
-  //       {
-  //         author: 'someone else',
-  //         content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
-  //         createdAt: '2w',
-  //       },
-  //       {
-  //         author: 'some stranger',
-  //         content: 'Hey, here are my thoughts on this issue.',
-  //         createdAt: '3w',
-  //       },
-  //     ],
-  //     id: 2,
-  //   },
-  //   {
-  //     content: "I need help",
-  //     createdAt: "11h",
-  //     updated: false,
-  //     respeaks: [],
-  //     id: 3,
-  //   },
-  //   {
-  //     content: "I'm depressed",
-  //     createdAt: "3w",
-  //     updated: true,
-  //     respeaks: [
-  //       {
-  //         author: 'someone else',
-  //         content: 'Hey, I have some other perspectives on this. I really think you should get up and going. Life is beautiful.',
-  //         createdAt: '2w',
-  //       },
-  //       {
-  //         author: 'some stranger',
-  //         content: 'Hey, here are my thoughts on this issue.',
-  //         createdAt: '3w',
-  //       },
-  //     ],
-  //     id: 4
-  //   },
-  //   {
-  //     content: "No hope for me",
-  //     createdAt: "2m",
-  //     updated: false,
-  //     respeaks: [],
-  //     id: 5
-  //   },
-  //   {
-  //     content: "I need help",
-  //     createdAt: "6m",
-  //     updated: false,
-  //     respeaks: [],
-  //     id: 6
-  //   },
-  // ]);
-
-  // thoughts.sort((a, b) => {
-  //   if (a.updated) {
-  //     return -1;
-  //   } else if (b.updated) {
-  //     return 1;
-  //   } else {
-  //     return a.createdAt < b.createdAt ? -1 : 1;
-  //   }
-  // });
-
-  
   return (
     <div style={{overflowX: 'visible'}}>
       <MyThoughtsContext.Consumer>
@@ -241,26 +170,38 @@ function HistoryPane() {
 
 function RespeakForm() {
   return(
-    <Form>
-      <Form.Group className="mb-3" controlId="formRespeak">
-        <Form.Label>What's another perspective on the following: </Form.Label>
-        <Card body border="warning" bg="warning">
-          <i>I feel like I am always being stupid and nobody is helping me. 
-          I am not smart enough. </i>
-        </Card>
-        <br></br>
-        <Form.Control as="textarea" placeholder="Can you identify some patterns? 
+    <WaitingThoughtsContext.Consumer>
+      { value => 
+        <Form>
+          <Form.Group className="mb-3" controlId="formRespeak">
+            <Form.Label>What's another perspective on the following: </Form.Label>
+            <Card body border="warning" bg="warning">
+              <i>I feel like I am always being stupid and nobody is helping me. 
+              I am not smart enough. </i>
+            </Card>
+            <br></br>
+            <Form.Control as="textarea" placeholder="Can you identify some patterns? 
       Are there any assumptions made without reason?" rows="3" />
-        
-      </Form.Group>
-      <Button variant="dark" type="submit" style={{float: 'right'}}>
-        SEND
-      </Button>
-    </Form>
+            
+          </Form.Group>
+          <Button variant="dark" type="submit">
+            Send
+          </Button>
+        </Form>
+      }
+    </WaitingThoughtsContext.Consumer>
   );
 }
 
 function App() {
+  const [activeKey, setActiveKey] = useState("home");
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const onThoughtDone = React.useCallback(() => {
+    setActiveKey("respeak");
+    setToastMessage("Please reframe a few other people's thoughts, while your thoughts are being reframed...");
+  }, []);
+  
   return (
     <ThoughtKeeper>
       <ThemeProvider>
@@ -276,11 +217,13 @@ function App() {
           <Row>
             <Col xs={2} />
             <Col xs={8}>
-              <Tabs defaultActiveKey="history" id="uncontrolled-tab-example" className="mb-3">
+              <Tabs activeKey={activeKey}
+                    onSelect={(eventKey) => setActiveKey(eventKey)}
+                    id="uncontrolled-tab-example" className="mb-3">
                 <Tab eventKey="home" title="Thoughts">
-                  <ThoughtsForm/>
+                  <ThoughtsForm onDone={onThoughtDone} />
                 </Tab>
-                <Tab eventKey="profile" title="Respeaks">
+                <Tab eventKey="respeak" title="Respeaks">
                   <RespeakForm />
                 </Tab>
                 <Tab eventKey="history" title="History">
@@ -290,6 +233,12 @@ function App() {
             </Col>
             <Col xs={2} />
           </Row>
+          <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)}>
+            <Toast.Header>
+              <strong>Thanks you!</strong>
+            </Toast.Header>
+            <Toast.Body>{toastMessage}</Toast.Body>
+          </Toast>
         </Container>
     </ThemeProvider>
     </ThoughtKeeper>
