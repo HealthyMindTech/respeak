@@ -65,7 +65,7 @@ async function addRespeakFunc(thoughtId, reformulationId, respeakText, author) {
 }
 
 
-export const openAIRespeak = functions.pubsub.schedule('every 5 minutes').onRun(async (context) => {
+export const openAIRespeak = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
 
     // Print list of throughts without respeaks
     const thoughts = await findThoughtsWithNoRespeaks();
