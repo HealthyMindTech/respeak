@@ -168,7 +168,7 @@ function HistoryPane() {
   )
 }
 
-function RespeakFormEntry({thoughtList}) {
+function RespeakFormEntry({thoughtList, onDone}) {
   const [thought, setThought] = useState(null);
   const textField = useRef();
 
@@ -184,7 +184,6 @@ function RespeakFormEntry({thoughtList}) {
   
   const passRespeak = useCallback(async (e) => {
     e.preventDefault();
-
     
     if (thought === null) {
       if (thoughtList.length > 0) {
@@ -200,7 +199,10 @@ function RespeakFormEntry({thoughtList}) {
     await addRespeak(thought.id, textField.current.value, null);
     
     textField.current.value = "";
-  }, [textField, thoughtList, thought]);
+    if (onDone) {
+      onDone();
+    }
+  }, [textField, thoughtList, thought, onDone]);
 
   if (!thought) {
     return null;
@@ -226,11 +228,11 @@ function RespeakFormEntry({thoughtList}) {
     </Form>);
 }
     
-function RespeakForm() {
+function RespeakForm({onDone}) {
   return(
     <WaitingThoughtsContext.Consumer>
       { value => {
-        return <RespeakFormEntry thoughtList={value} />
+        return <RespeakFormEntry onDone={onDone} thoughtList={value} />
       }
       }
     </WaitingThoughtsContext.Consumer>
@@ -244,6 +246,11 @@ function App() {
   const onThoughtDone = React.useCallback(() => {
     setActiveKey("respeak");
     setToastMessage("Please reframe a few other people's thoughts, while your thoughts are being reframed...");
+  }, []);
+
+  const onRespeakDone = React.useCallback(() => {
+    setActiveKey("thought");
+    setToastMessage("You have respoken on another person's thought. Send more thoughts?");
   }, []);
   
   return (
@@ -268,7 +275,7 @@ function App() {
                   <ThoughtsForm onDone={onThoughtDone} />
                 </Tab>
                 <Tab eventKey="respeak" title="Respeaks">
-                  <RespeakForm />
+                  <RespeakForm onDone={onRespeakDone} />
                 </Tab>
                 <Tab eventKey="history" title="History">
                   <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
