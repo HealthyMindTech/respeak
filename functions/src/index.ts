@@ -40,6 +40,7 @@ export const addThought = functions.region("europe-west3").https.onCall(async (d
 
 export const addSpeak = functions.region("europe-west3").https.onCall(async (data, context) => {
     const firestore = admin.firestore();
+    const thoughtId = data.thoughtId;
 
 
 });

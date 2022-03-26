@@ -46,7 +46,8 @@ After build has succeeded, use firebase tools to deploy:
 $ firebase deploy
 ```
 
-To only deploy to hosting do:
+To deploy the frontend app, do:
 ```
-$ firebase deploy --only hosting
+$ npm run deploy-frontend
 ```
+
