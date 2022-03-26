@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously } from "firebase/auth";
-
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
+         
 const firebaseConfig = {
   apiKey: "AIzaSyCoz1WdryRt-XN7YcrdZLH4DA6GEoUFIys",
   authDomain: "respeak-92478.firebaseapp.com",
@@ -12,10 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const firestore = getFirestore(app);
+const functions = getFunctions(app);
 
 signInAnonymously(auth)
   .then(() => {
-    console.log("User", auth.currentUser);
+    onSnapshot(collection(firestore, "waitingThought"),
+               (doc) => {
+                 console.log(doc);
+               });
   })
   .catch((error) => {
     console.log(error);

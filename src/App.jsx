@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab} from 'react-bootstrap';
+import React, { useState, useCallback, useRef } from "react";
 import { QuestionCircle, ClockHistory } from 'react-bootstrap-icons';
+import {Navbar, ThemeProvider, Row, Col, Container, Modal, Button, Form, Card, Tabs, Tab} from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png'
 import Avatar from '../src/assets/img/avatar.png'
+
+import { postThought } from './firebaseUtils';
+
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -49,14 +52,21 @@ function InfoDialog() {
 }
 
 function ThoughtsForm() {
+  const thoughtField = useRef();
+  const submit = useCallback((e) => {
+    e.preventDefault();
+    console.log(thoughtField);
+    postThought(thoughtField.value);
+  });
+    
   return(
-    <Form>
+    <Form onSubmit={submit}>
     <Form.Group className="mb-3" controlId="formBasicThought">
       <Form.Label>What's on your mind?</Form.Label>
-      <Form.Control as="textarea" placeholder="Enter thoughts here" rows="3" />
-      <Form.Text className="text-muted">
-        Hint: Just share what's burdening you atm. 
-      </Form.Text>
+        <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
+        <Form.Text className="text-muted">
+          Hint: Just share what's burdening you atm. 
+        </Form.Text>
     </Form.Group>
     <Button variant="dark" type="submit" style={{float: 'right'}}>
       SEND
