@@ -2,11 +2,17 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import axios from "axios";
 
+import reformulations from './reformulations';
+
 const THOUGHT_COLLECTION = 'thought';
 const RESPEAK_COLLECTION = 'respeak';
 const REFORMULATIONS_COLLECTION = 'reformulations';
 
 admin.initializeApp();
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 async function findThoughtsWithNoRespeaks() {
   return await admin.firestore().collection(THOUGHT_COLLECTION).where('numRespeaks', '==', 0).get();
@@ -60,50 +66,26 @@ async function addRespeakFunc(thoughtId, reformulationId, respeakText, author) {
 
 
 export const openAIRespeak = functions.region("europe-west3").https.onCall(async (data, context) => {
-    const reformulation_name = data.reformulation_name;
-    //Get thought document based on name
-    const reformulation = await admin.firestore().collection(REFORMULATIONS_COLLECTION).doc(reformulation_name).get();
-    if (!reformulation.exists) return { error: `Reformulation ${reformulation_name} does not exist` };
 
     // Print list of throughts without respeaks
     const thoughts = await findThoughtsWithNoRespeaks();
     thoughts.forEach(async thought => {
         const thoughtData = thought.data();
         if (thoughtData.content !== null && thoughtData.content.length > 0) {
-            getOpenAIResponse(reformulation.data().openai_command, thoughtData.content).then(response => {
+            let reformulation = reformulations[randomInt(0, reformulations.length - 1)];
+
+            getOpenAIResponse(reformulation.openai_command, thoughtData.content).then(response => {
                 if (response !== "") {
-                    console.log('Reformulation: ' + reformulation.data().openai_command);
+                    console.log('Reformulation: ' + reformulation.openai_command);
                     console.log('Thought: ' + thoughtData.content);
                     console.log('Response: ' + response);
-                    addRespeakFunc(thought.id, reformulation.id, response, 'openai');
+                    addRespeakFunc(thought.id, reformulation.name, response, 'openai');
                 }
             });
         }
         
     });    
     return
-    const thoughtText = data.thoughtText;
-
-    // const openaiPrompt
-    if (reformulation.exists) {
-        return await axios.post("https://api.openai.com/v1/engines/text-davinci-002/completions", {
-            "prompt": `${reformulation.data().openai_command}\n\nThought: ${thoughtText}\n\n`,
-            "temperature": 0.7,
-            "max_tokens": 182,
-            "top_p": 1,
-            "frequency_penalty": 0,
-            "presence_penalty": 0
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + functions.config().openai.key
-            }
-        }).then(res => {
-            return res.data.choices[0].text;
-        });
-    } else {
-        return "Reformulation not found";
-    }
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
