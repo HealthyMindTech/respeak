@@ -363,12 +363,6 @@ function App() {
               </Col>
               <Col xl={4} lg={3} md={2} xs={1} />
             </Row>
-            <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)}>
-              <Toast.Header>
-                <strong>Thank you!</strong>
-              </Toast.Header>
-              <Toast.Body>{toastMessage}</Toast.Body>
-            </Toast>
           </Container>
         </Container>
       </ThemeProvider>
