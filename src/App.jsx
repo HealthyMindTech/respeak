@@ -330,10 +330,10 @@ function HistoryTabTitle() {
       }, 0);
       return (<>
         <div style={{width: 0, height: 0, position: "relative"}}>
-          { newThoughts > 0 ? <span className="fs-6" style={{position: "relative", left: 51, top: 12}}>
+          { newThoughts > 0 ? <span className="fs-6" style={{position: "relative", left: 60, top: -10}}>
                               <Badge pill bg="info"> {newThoughts}</Badge></span> : null}
         </div>
-        <JournalBookmarkFill size={28}/>
+        <JournalBookmarkFill size={20}/>
           <div className="fs-6">Thoughts</div>
       </>)
     }}
@@ -398,10 +398,10 @@ function App() {
                 <Tabs activeKey={activeKey}
                   onSelect={(eventKey) => setActiveKey(eventKey)}
                   id="uncontrolled-tab-example" className="mb-3 justify-content-center">
-                  <Tab eventKey="home" title={<><ChatSquareText size={28}/><div className="fs-6">Speak</div></>}>
+                  <Tab eventKey="home" title={<><ChatSquareText size={20}/><div className="fs-6">Speak</div></>}>
                     <ThoughtsForm onDone={onThoughtDone} />
                   </Tab>
-                  <Tab eventKey="respeak" title={<><ChatRightHeart size={28}/><div className="fs-6">Respeak</div></>}>
+                  <Tab eventKey="respeak" title={<><ChatRightHeart size={20}/><div className="fs-6">Respeak</div></>}>
                     <RespeakForm onDone={onRespeakDone} />
                   </Tab>
                   <Tab eventKey="thought" title={<HistoryTabTitle/>}>
