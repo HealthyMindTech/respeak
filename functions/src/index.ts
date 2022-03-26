@@ -66,7 +66,7 @@ async function addRespeakFunc(thoughtId, reformulationId, respeakText, author) {
 }
 
 
-export const openAIRespeak = functions.pubsub.schedule('* * * * *').onRun(async (context) => {
+export const openAIRespeak = functions.region("europe-west3").pubsub.schedule('* * * * *').onRun(async (context) => {
 
     // Print list of throughts without respeaks
     const thoughts = await findThoughtsWithNoRespeaks();
