@@ -8,7 +8,7 @@ import Image from 'react-bootstrap/Image';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
-import { addThought, addRespeak } from './firebaseUtils';
+import { addThought, addRespeak, getRespeaks } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
 
 function InfoDialog() {
@@ -80,18 +80,40 @@ function ThoughtsForm({onDone}) {
   );
 }
 
+function ThoughtModal({ thought }) {
+  const [respeaks, setRespeaks] = useState([]);
+  
+  useEffect(() => {
+    let running = true;
+    async function f() {
+      if (!running) return;
+      const respeaks = await getRespeaks(thought.id);
+      if (!running) return;
+      setRespeaks(respeaks);
+    }
+    f();
+    return () => { running = false; };
+  }, [thought]);
+
+  return (
+    <>
+      <ThoughtBubble thought={thought} />
+      {respeaks.map(r => <RespeakBubble key={r.id} respeak={r} />)}
+    </>);
+}
+
 function ThoughtBubble({ thought }) {
   return (
-    <div>
+    <Container>
       <Row>
         <Col xs={2} />
         <Col xs={10}>
-          <div className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
+          <Container className="shadow-sm mb-4 mt-4 br-4 p-3 bg-primary bg-gradient rounded text-white">
             {thought.content}
-          </div>
+          </Container>
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 }
 
@@ -143,8 +165,7 @@ function HistoryEntry({ thought }) {
     
     <Modal show={show} onHide={handleClose}>
       <Modal.Body>
-        <ThoughtBubble thought={thought} />
-        {(thought.respeaks || []).map((r, i) => <RespeakBubble key={i} respeak={r} />)}
+        <ThoughtModal thought={thought} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={handleClose}>
@@ -231,10 +252,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
 function RespeakForm({onDone}) {
   return(
     <WaitingThoughtsContext.Consumer>
-      { value => {
-        return <RespeakFormEntry onDone={onDone} thoughtList={value} />
-      }
-      }
+      { value => (<RespeakFormEntry onDone={onDone} thoughtList={value} />) }
     </WaitingThoughtsContext.Consumer>
   );
 }
@@ -277,7 +295,7 @@ function App() {
                 <Tab eventKey="respeak" title="Respeaks">
                   <RespeakForm onDone={onRespeakDone} />
                 </Tab>
-                <Tab eventKey="history" title="Thoughts">
+                <Tab eventKey="thought" title="Thoughts">
                   <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
                 </Tab>
               </Tabs>

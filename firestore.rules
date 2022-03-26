@@ -10,5 +10,13 @@ service cloud.firestore {
        match /thought/{thought=*} {
              allow read: if request.auth.uid != null;
        }
+
+       match /thought/{thought=*}/respeak {
+             allow read: if request.auth.uid != null;
+       }
+
+       match /thought/{thought=*}/respeak/{respeak=*} {
+             allow read: if request.auth.uid != null;
+       }
   }
 }

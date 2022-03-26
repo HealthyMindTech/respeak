@@ -1,9 +1,10 @@
 import { getApp } from 'firebase/app';
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getFirestore, collection, connectFirestoreEmulator, getDocs } from "firebase/firestore";
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
 import { getAuth, signInAnonymously, connectAuthEmulator } from "firebase/auth";
 
 const THOUGHT_COLLECTION = "thought";
+const RESPEAK_COLLECTION = "respeak";
 
 const app = getApp();
 const functions = getFunctions(app, "europe-west3");
@@ -31,6 +32,12 @@ const addRespeak = async (thoughtId, respeak, perspective) => {
   });
 }
 
+const getRespeaks = async (thoughtId) => {
+  const respeaks = collection(firestore, THOUGHT_COLLECTION, thoughtId, RESPEAK_COLLECTION);
+  const querySnapshot = await getDocs(respeaks);
+  return querySnapshot.docs.map((doc) => Object.assign({}, doc.data(), { id: doc.id }));
+}
+
 const signIn = async () => {
   return signInAnonymously(auth)
 }
@@ -41,6 +48,8 @@ export {
   signIn,
   THOUGHT_COLLECTION,
   firestore,
-  auth
+  auth,
+  getRespeaks
+  
 };
   
