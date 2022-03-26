@@ -98,8 +98,9 @@ function ThoughtModal({ thought }) {
   return (
     <>
       <ThoughtBubble thought={thought} />
-      {respeaks.map(r => <RespeakBubble key={r.id} respeak={r} />)}
-    </>);
+      { respeaks.map(r => <RespeakBubble key={r.id} respeak={r} />) }
+    </>
+  );
 }
 
 function ThoughtBubble({ thought }) {
