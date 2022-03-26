@@ -180,9 +180,12 @@ function HistoryEntry({ thought }) {
 function HistoryPane() {
   return (
     <div style={{overflowX: 'visible'}}>
+      <p>Here you can see your past thoughts and their answers.</p>
       <MyThoughtsContext.Consumer>
-        {(myThoughts) =>
-          myThoughts.map(thought => <HistoryEntry key={thought.id} thought={thought} />)
+        {(myThoughts) => {
+          if (myThoughts.length === 0) return <p>You have not written any thoughts yet.</p>
+          return myThoughts.map(thought => <HistoryEntry key={thought.id} thought={thought} />);
+        }
         }
       </MyThoughtsContext.Consumer>
     </div>
@@ -289,10 +292,10 @@ function App() {
               <Tabs activeKey={activeKey}
                     onSelect={(eventKey) => setActiveKey(eventKey)}
                     id="uncontrolled-tab-example" className="mb-3">
-                <Tab eventKey="home" title="Thoughts">
+                <Tab eventKey="home" title="Speak">
                   <ThoughtsForm onDone={onThoughtDone} />
                 </Tab>
-                <Tab eventKey="respeak" title="Respeaks">
+                <Tab eventKey="respeak" title="Respeak">
                   <RespeakForm onDone={onRespeakDone} />
                 </Tab>
                 <Tab eventKey="thought" title="Thoughts">
@@ -304,7 +307,7 @@ function App() {
           </Row>
           <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)}>
             <Toast.Header>
-              <strong>Thanks you!</strong>
+              <strong>Thank you!</strong>
             </Toast.Header>
             <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
