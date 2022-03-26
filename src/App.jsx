@@ -364,7 +364,7 @@ function App() {
             <InfoDialog />
           </Container>
         </Navbar>
-        <ToastContainer position="top-center">
+        <ToastContainer position="top-center" style={{marginTop: "4.5rem"}}>
           <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
             <Toast.Header>
               <strong>Thank you!</strong>
@@ -379,7 +379,7 @@ function App() {
               {
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr',
-                gridTemplateRows: '1fr 2fr 2fr',
+                gridTemplateRows: '2fr 2fr 1fr',
                 height: '50vh',
               }
             }
