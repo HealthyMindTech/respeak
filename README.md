@@ -46,3 +46,7 @@ After build has succeeded, use firebase tools to deploy:
 $ firebase deploy
 ```
 
+To only deploy to hosting do:
+```
+$ firebase deploy --only hosting
+```
