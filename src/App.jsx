@@ -314,14 +314,13 @@ function App() {
               {
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr',
-                gridTemplateRows: '1fr 2fr 3fr',
+                gridTemplateRows: '1fr 2fr 2fr',
                 height: '50vh',
               }
             }
             className='p-0'>
-            <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', textAlign: 'center', verticalAlign: 'middle' }}>
-              <Image src={AvatarImage} />
-              <h2 className="text-white">Username</h2>
+            <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', textAlign: 'center' }}>
+              <Image src={AvatarImage} style={{margin: '0 auto'}}/>
             </Container>
           </Container>
 
