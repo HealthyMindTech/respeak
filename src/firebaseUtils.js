@@ -19,6 +19,7 @@ if (process.env.REACT_APP_USE_EMULATOR) {
 
 const addThoughtCallable = httpsCallable(functions, 'addThought');
 const addRespeakCallable = httpsCallable(functions, 'addRespeak');
+const noteSeenRespeaksCallable = httpsCallable(functions, 'noteSeenRespeaks');
 
 const addThought = async (thought) => {
   await addThoughtCallable({content: thought});
@@ -38,6 +39,10 @@ const getRespeaks = async (thoughtId) => {
   return querySnapshot.docs.map((doc) => Object.assign({}, doc.data(), { id: doc.id }));
 }
 
+const noteSeenRespeaks = async (thoughtId, seenRespeaks) => {
+  await noteSeenRespeaksCallable({ thoughtId, seenRespeaks });
+};
+
 const signIn = async () => {
   return signInAnonymously(auth)
 }
@@ -49,7 +54,7 @@ export {
   THOUGHT_COLLECTION,
   firestore,
   auth,
-  getRespeaks
-  
+  getRespeaks,
+  noteSeenRespeaks
 };
   

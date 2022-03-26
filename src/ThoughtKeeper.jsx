@@ -65,17 +65,33 @@ const ThoughtKeeper = ({children}) => {
             
             snapshot.docChanges().forEach((change) => {
               if (change.type === 'added') {
-                newThoughts.push(Object.assign({},
-                                               {"id": change.doc.id},
+                const data = change.doc.data();
+                if (process.env.NODE_ENV === 'production') {
+                  if (data['owner'] === auth.currentUser.uid) {
+                    return;
+                  }
+                }
+
+                newThoughts.push(Object.assign({"id": change.doc.id},
                                                change.doc.data()));
               }
               if (change.type === 'modified') {
-                currentThoughts[change.doc.id] = Object.assign({},
-                                                               {"id": change.doc.id},
-                                                               change.doc.data());
+                const data = change.doc.data();
+                if (process.env.NODE_ENV === 'production') {
+                  if (data['owner'] === auth.currentUser.uid) {
+                    return;
+                  }
+                }
+
+                currentThoughts[change.doc.id] = Object.assign(
+                  {"id": change.doc.id},
+                  change.doc.data()
+                );
               }
               if (change.type === 'delete') {
-                delete currentThoughts[change.doc.id];
+                if (currentThoughts[change.doc.id]) {
+                  delete currentThoughts[change.doc.id];
+                }
               }
             });
 

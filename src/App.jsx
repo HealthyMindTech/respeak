@@ -9,7 +9,7 @@ import AvatarImage from '../src/assets/img/avatar_2_h.png';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
-import { addThought, addRespeak, getRespeaks } from './firebaseUtils';
+import { addThought, addRespeak, getRespeaks, noteSeenRespeaks } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
 
 function InfoDialog() {
@@ -150,14 +150,14 @@ function RespeakBubble({ respeak }) {
 function HistoryEntry({ thought }) {
   const [show, setShow] = useState(false);
 
-  const handleClose = () => {
-    thought.updated = false;
+  const handleClose = useCallback(() => {
     return setShow(false);
-  };
+  }, []);
 
-  const handleShow = () => {
+  const handleShow = useCallback(() => {
     setShow(true);
-  };
+    noteSeenRespeaks(thought.id, thought.notSeenRespeaks);
+  }, [thought]);
 
   return(
     <>
@@ -167,12 +167,14 @@ function HistoryEntry({ thought }) {
         onClick={handleShow}
         style={{cursor: 'pointer', userSelect: 'none', borderRadius: '15px'}}
       >
-        { thought.notSeenRespeaks > 0 ?
+
+        { thought.notSeenRespeaks ? 
           (<div className="fs-5" style={{float: 'right'}}>
-          <Badge pill bg="success">
-            {thought.notSeenRespeaks}
-          </Badge>
-        </div>) : null }
+            <Badge pill bg="success">
+              {thought.notSeenRespeaks}
+            </Badge>
+           </div>) : null
+        }
         <Container className="fs-6 p-0">
           {thought.content}
         </Container>
@@ -303,6 +305,19 @@ function App() {
             <InfoDialog />
           </Container>
         </Navbar>
+        <Container>
+          <Row>
+            <Col xs={4}/>
+            <Col xs={4}>
+              <Toast show={toastMessage !== null} onClose={() => setToastMessage(null)} delay={5000} autohide>
+                <Toast.Header>
+                  <strong>Thank you!</strong>
+                </Toast.Header>
+                <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
+            </Col>
+          </Row>
+        </Container>
         <Container fluid className="p-0 m-0" style={{ backgroundImage: `url(${BgImage})`, backgroundRepeat: 'no-repeat' }}>
           <Container
             fluid

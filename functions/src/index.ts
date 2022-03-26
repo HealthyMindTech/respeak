@@ -15,8 +15,8 @@ function randomInt(min, max) {
 }
 
 async function findThoughtsWithNoRespeaks() {
-  const snapshot = await admin.firestore().collection(THOUGHT_COLLECTION).where('numRespeaks', '==', 0).get()
-  return snapshot.docs;
+    const snapshot = await admin.firestore().collection(THOUGHT_COLLECTION).where('numRespeaks', '==', 0).get()
+    return snapshot.docs;
 }
 
 function getOpenAIResponse(reformulationCommand, thoughtText) {
@@ -82,10 +82,38 @@ export const openAIRespeak = functions.region("europe-west3").pubsub.schedule('*
             console.log('Response: ' + response);
             await addRespeakFunc(thought.id, reformulation.name, response, 'openai');
         }
-        
-    });    
+
+    });
     await Promise.all(thoughtPromises);
     return null
+});
+
+export const noteSeenRespeaks = functions.region("europe-west3").https.onCall(async (data, context) => {
+    const seenRespeaks = data.seenRespeaks;
+    const thoughtId = data.thoughtId;
+    const firestore = admin.firestore();
+
+    const uid = context.auth!.uid!;
+    const thought = admin.firestore().collection(THOUGHT_COLLECTION).doc(thoughtId);
+    firestore.runTransaction(async tx => {
+        const thoughtDoc = await tx.getAll(thought);
+        if (thoughtDoc.length === 0) {
+            return;
+        }
+
+        const notSeenRespeaks = thoughtDoc[0].get("notSeenRespeaks");
+        if (uid !== thoughtDoc[0].get("owner")) {
+            return;
+        }
+
+        if (notSeenRespeaks - seenRespeaks < 0) {
+            return;
+        }
+
+        tx.update(thought, { "notSeenRespeaks": notSeenRespeaks - seenRespeaks });
+    });
+
+    return "done";
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
