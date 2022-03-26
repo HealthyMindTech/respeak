@@ -30,7 +30,7 @@ function InfoDialog() {
         </Modal.Header>
         <Modal.Body>
           <p>Share your thoughts and help others reframe theirs.</p>
-          <p>Write down what thoughts are burdening you at the moment, and click SEND. </p>
+          <p>Write down what thoughts are burdening you at the moment, and click Send. </p>
           <p>Afterward, help others reframe their thoughts. Can you find a different 
           perspective for their challenge? </p>
           {/* <p>For every 2 thoughts that you help reframe, you get one of your thoughts reframed. 
@@ -70,13 +70,13 @@ function ThoughtsForm({onDone}) {
     <Form onSubmit={submit}>
       <Form.Group className="mb-3" controlId="formBasicThought">
         <Form.Label>What's on your mind? </Form.Label>
-        <Form.Control ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
+          <Form.Control required ref={thoughtField} as="textarea" placeholder="Enter thoughts here" rows="3" />
         <Form.Text className="text-muted">
           Hint: Just share what's burdening you atm. 
         </Form.Text>
       </Form.Group>
       <Button variant="dark" type="submit">
-        SEND
+        Send
       </Button>
     </Form>
   );
@@ -267,6 +267,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
           </Container>
         </Container>
         <Form.Control
+          required
           as="textarea"
           ref={textField}
           placeholder="Can you identify some patterns? Are there any assumptions made without reason?"
@@ -296,7 +297,7 @@ function App() {
   }, []);
 
   const onRespeakDone = React.useCallback(() => {
-    setActiveKey("thought");
+    setActiveKey("home");
     setToastMessage("You have respoken on another person's thought. Send more thoughts?");
   }, []);
 
