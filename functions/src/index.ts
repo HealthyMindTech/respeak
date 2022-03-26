@@ -4,29 +4,35 @@ import axios from "axios";
 
 const THOUGHT_COLLECTION = 'thought';
 const RESPEAK_COLLECTION = 'respeak';
+const REFORMULATIONS_COLLECTION = 'reformulations';
 
 admin.initializeApp();
 
-export const openAIRespeak = functions.region("europe-west3").https.onCall(async (data, response) => {
+export const openAIRespeak = functions.region("europe-west3").https.onCall(async (data, context) => {
     const thoughtText = data.thoughtText;
+    const reformulation_name = data.reformulation_name;
+    //Get thought document based on name
+    const reformulation = await admin.firestore().collection(REFORMULATIONS_COLLECTION).doc(reformulation_name).get();
     // const openaiPrompt
-    // axios request
-    const res = await axios.post("https://api.openai.com/v1/engines/text-davinci-edit-001/edits", {
-        "prompt": `Identify some patterns and exaggerations in this thought and assumptions the subject made without reason.\n\nThought: "${thoughtText}"\n\n`,
-        "temperature": 0.7,
-        "max_tokens": 182,
-        "top_p": 1,
-        "frequency_penalty": 0,
-        "presence_penalty": 0
-    }, {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + functions.config().openai.key
-        }
-    }).then(res => {
-        console.log(res.data);
-        return res.data.choicesp[0].text;
-    });
+    if (reformulation.exists) {
+        return await axios.post("https://api.openai.com/v1/engines/text-davinci-002/completions", {
+            "prompt": `${reformulation.data().openai_command}\n\nThought: ${thoughtText}\n\n`,
+            "temperature": 0.7,
+            "max_tokens": 182,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + functions.config().openai.key
+            }
+        }).then(res => {
+            return res.data.choices[0].text;
+        });
+    } else {
+        return "Reformulation not found";
+    }
 });
 
 export const addThought = functions.region("europe-west3").https.onCall(async (data, context) => {
