@@ -32,6 +32,6 @@ export default [
   {
     "name": "rationalize",
     "prompt": "Can you identify some patterns? Are there any assumptions made without reason?",
-    "openai_command": "Identify some patterns and exaggerations in this thought and assumptions the subject made without reason."
+    "openai_command": "Identify some patterns and negative exaggerations in this thought and assumptions the subject made without reason."
   }
 ]
