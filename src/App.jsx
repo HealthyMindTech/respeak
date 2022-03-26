@@ -11,6 +11,7 @@ import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
 import { addThought, addRespeak, getRespeaks, noteSeenRespeaks } from './firebaseUtils';
 import { labelForTimeSinceDate } from './utils';
+import './index.css';
 
 function InfoDialog() {
   const [show, setShow] = useState(false);
@@ -163,10 +164,16 @@ function HistoryEntry({ thought }) {
     <>
       <Container
         key={thought.id}
-        className="shadow mb-4 mt-4 br-4 p-3 bg-white" 
+        className="mb-4 mt-4 br-4 p-3 bg-white" 
         onClick={handleShow}
-        style={{cursor: 'pointer', userSelect: 'none', borderRadius: '15px'}}
-      >
+        style={
+          {
+            cursor: 'pointer', 
+            userSelect: 'none', 
+            borderRadius: '15px',
+            boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px'
+          }
+        }>
 
         { thought.notSeenRespeaks ? 
           (<div className="fs-5" style={{float: 'right'}}>
@@ -342,13 +349,7 @@ function App() {
           <Container fluid style={{
             background: "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 95%, rgba(255,255,255,0) 100%)",
           }}>
-            <Row
-
-              style={
-                {
-                  paddingTop: '.5rem',
-                }}
-            >
+            <Row style={{ paddingTop: '.7rem' }} >
               <Col xl={4} lg={3} md={2} xs={1} />
               <Col xl={4} lg={6} md={8} xs={10}>
                 <Tabs activeKey={activeKey}

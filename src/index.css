@@ -1,0 +1,3 @@
+.nav-tabs > li > .nav-link:not(.active) {
+  color: rgb(120, 160, 160);
+}
