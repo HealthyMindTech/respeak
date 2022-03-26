@@ -5,6 +5,7 @@ import {
   Toast
 } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
+import AvatarImage from '../src/assets/img/avatar_2_h.png';
 import BgImage from '../src/assets/img/Thoughts.png';
 import ThoughtKeeper from './ThoughtKeeper';
 import { MyThoughtsContext, WaitingThoughtsContext } from './context';
@@ -284,7 +285,25 @@ function App() {
             <InfoDialog /> 
           </Container>
         </Navbar>
-        <Image src={BgImage} className='img-fluid w-100' alt='...' />
+        <Container
+          fluid
+          style={
+            {
+              display: 'grid',
+              gridTemplateColumns: '1fr 180px 1fr',
+              gridTemplateRows: '1fr 2fr 1fr',
+              height: '50vh',
+              backgroundImage: `url(${BgImage})`,
+              backgroundRepeat: 'no-repeat'
+            }
+          }
+          className='p-0'>
+          {/* <Image src={BgImage} className='img-fluid w-100 p-0 m-0' alt='...' /> */}
+          <Container className="column" style={{ gridColumn: '2 / span 1', gridRow: '2 / span 1', background: '#fff', textAlign: 'center', verticalAlign: 'middle' }}>
+            <Image src={AvatarImage} />
+            <h2>Username</h2>
+          </Container>
+        </Container>
         {/* <Image src={Avatar}  style={{position: 'relative', height: '50%'}}/> */}
         <Container>
           <Row>
