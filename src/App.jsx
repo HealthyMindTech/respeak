@@ -277,7 +277,7 @@ function App() {
                 <Tab eventKey="respeak" title="Respeaks">
                   <RespeakForm onDone={onRespeakDone} />
                 </Tab>
-                <Tab eventKey="history" title="History">
+                <Tab eventKey="history" title="Thoughts">
                   <HistoryPane style={{maxHeight: '100%', overflowY: 'scroll'}}/>
                 </Tab>
               </Tabs>
