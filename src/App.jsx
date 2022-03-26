@@ -226,7 +226,7 @@ function HistoryEntry({ thought }) {
 function HistoryPane() {
   return (
     <div style={{overflowX: 'visible'}}>
-      <p>Here you can see your past thoughts and their answers.</p>
+      <p>Here you can see your past thoughts and their respeaks.</p>
       <MyThoughtsContext.Consumer>
         {(myThoughts) => {
           if (myThoughts.length === 0) return <p>You have not written any thoughts yet.</p>
@@ -308,7 +308,7 @@ function RespeakFormEntry({thoughtList, onDone}) {
       <Button variant="light"
               style={{float: "right"}}
               onClick={() => setThoughtIndex((i) => {return i === thoughtList.length - 1 ? 0 : i + 1})}>
-        Jump to other thought
+        Skip
       </Button>
     </Form>);
 }
@@ -331,7 +331,7 @@ function HistoryTabTitle() {
       return (<>
         <div style={{width: 0, height: 0, position: "relative"}}>
           { newThoughts > 0 ? <span className="fs-6" style={{position: "relative", left: 51, top: 12}}>
-          <Badge pill bg="info"> {newThoughts}</Badge></span> : null}
+                              <Badge pill bg="info"> {newThoughts}</Badge></span> : null}
         </div>
         <JournalBookmarkFill size={28}/>
           <div class="fs-6">Thoughts</div>
