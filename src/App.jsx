@@ -280,7 +280,6 @@ function RespeakFormEntry({thoughtList, onDone}) {
   if (!thought) {
     return null;
   }
-  console.log(thoughtList);
   return (
     <Form onSubmit={passRespeak}>
       <Form.Group className="mb-3" controlId="formRespeak">
