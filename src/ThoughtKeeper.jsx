@@ -34,7 +34,7 @@ const ThoughtKeeper = ({children}) => {
             const output = Object.fromEntries(thoughts.map(t => [t.id, t]));
             
             const res = snapshot.docs.map(doc => output[doc.id] ? output[doc.id] :
-                                          Object.assign({id: doc.id}, doc.data()))
+                                          Object.assign({ id: doc.id }, doc.data()))
             snapshot.docChanges().forEach(change => {
               if (change.type === 'modified') {
                 res[change.newIndex] = Object.assign({id: change.doc.id}, change.doc.data());
@@ -52,7 +52,7 @@ const ThoughtKeeper = ({children}) => {
           collection(firestore, THOUGHT_COLLECTION),
           orderBy("numRespeaks", "asc"),
           orderBy("updatedAt", "desc"),
-          limit(20)
+          limit(30)
         ),
         (snapshot) => {
           setWaitingThoughts(thoughts => {
