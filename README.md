@@ -24,7 +24,7 @@ A therapist helps you reframe your thoughts. But their resources are limited. We
 
 *Tech*: The solution is a progressive web app built using React.js, with a backend on Firebase that is used for storage, functions, and hosting. We also use OpenAI for generating reformulations when not enough users are logged in on the platform to reformulate thoughts. 
 
-*Regulatory framework considerations*: moderation, handling of data. 
+*Regulatory framework considerations*: The solution in the current version has not been validated for medical purposes. For information and advice on health, we redirect users to healthcare professionals. 
 
 ## Who we are
 
@@ -32,7 +32,7 @@ We are a team of 5, with combined experience of over 30 years in software develo
 
 ## Next steps & Future Work
 
-*Future feature development plans*: reputation system, login system, ability to add friends or a caregiver, chatting with the community, creating groups, content moderation via OpenAI, paid component once we get professional therapists to join the community as well, prediction of depression based on user interaction in the solution (change over time), integration of chat functionality with virtual users (sometimes people are more open to talk with something or someone who doesn't judge you), integration with additional sources of information (for example, on what depression is, the symptoms, available therapies, and what to prepare for when going to a therapist for an evaluation).
+*Future feature development plans*: reputation system, login system, ability to add friends or a caregiver, chatting with the community, creating groups, content moderation (potentially via OpenAI), handling of data under GDPR, paid component once we get professional therapists to join the community as well, prediction of depression based on user interaction in the solution (change over time) and through that ensuring we can direct them to healthcare professionals, integration of chat functionality with virtual users (sometimes people are more open to talk with something or someone who doesn't judge you), integration with additional sources of information (for example, on what depression is, the symptoms, available therapies, and what to prepare for when going to a therapist for an evaluation, where to seek help). 
 
 *Join us* We are looking for people to join the Respeak community: join at https://respeak.app
 
